@@ -118,23 +118,30 @@ public class OperacionesHash implements FuncionHash {
         }
     }
 
-    public void buscarElemento(int k) {
-        int posDiv = hashDivision(k, this.m);
-        int posMult = hashMultiplicacion(k, this.m);
+    // Buscar en la tabla de División
+    public Object buscarElementoDivision(int k) {
+        int pos = hashDivision(k, this.m);
+        Object resultado = slotsDivision[pos].buscar(k);
 
-        // buscar en la lista del slot posDiv
-        if (slotsDivision[posDiv].buscar(k)) {
-            System.out.println("[División] Elemento encontrado: " + k + " en el slot: " + posDiv);
+        if (resultado != null) {
+            System.out.println("[División] Registro con ID " + k + " encontrado en el slot " + pos);
         } else {
-            System.out.println("[División] Elemento no encontrado: " + k + " en el slot: " + posDiv);
+            System.out.println("[División] Registro con ID " + k + " NO encontrado.");
         }
+        return resultado;
+    }
 
-        // buscar en la lista del slot posMult
-        if (slotsMultiplicacion[posMult].buscar(k)) {
-            System.out.println("[Multiplicación] Elemento encontrado: " + k + " en el slot: " + posMult);
+    // Buscar en la tabla de Multiplicación
+    public Object buscarElementoMultiplicacion(int k) {
+        int pos = hashMultiplicacion(k, this.m);
+        Object resultado = slotsMultiplicacion[pos].buscar(k);
+
+        if (resultado != null) {
+            System.out.println("[Multiplicación] Registro con ID " + k + " encontrado en el slot " + pos);
         } else {
-            System.out.println("[Multiplicación] Elemento no encontrado: " + k + " en el slot: " + posMult);
+            System.out.println("[Multiplicación] Registro con ID " + k + " NO encontrado.");
         }
+        return resultado;
     }
 
     // mostrar el total de colisiones para cada función hash

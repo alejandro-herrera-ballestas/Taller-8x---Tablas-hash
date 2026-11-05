@@ -128,4 +128,20 @@ public class Lista <T>{
 		else
 			System.out.println("La Lista esta vacia");
 	}
+
+	public Object buscar(int k) {
+    if (estaVacia()) {
+        return null;
+    }
+    
+    Nodo actual = primerNodo; 
+    while (actual != null) {
+        // si el dato del nodo actual es igual a k, retornamos el dato
+        if (actual.getDato() != null && actual.getDato().equals(k)) {
+            return actual.getDato(); 
+        }
+        actual = actual.sig;	// avanzamos al siguiente nodo
+    }
+    return null; // No se encontró en la lista
+}
 }
