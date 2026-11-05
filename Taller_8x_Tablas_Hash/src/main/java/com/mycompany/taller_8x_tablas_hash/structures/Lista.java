@@ -12,7 +12,7 @@ public class Lista <T>{
 		tamaño = 0;
 	}
 
-	private boolean estaVacia(){
+	public boolean estaVacia(){
 		if (tamaño == 0)
 			return true;
 		else
