@@ -1,7 +1,7 @@
 package com.mycompany.taller_8x_tablas_hash.controller;
 
 import com.mycompany.taller_8x_tablas_hash.wiew.VentanaPrincipal;
-import com.mycompany.taller_8x_tablas_hash.structures.TablaHash.TablaHash;
+import com.mycompany.taller_8x_tablas_hash.structures.TablaHash.OperacionesHash;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFileChooser;
