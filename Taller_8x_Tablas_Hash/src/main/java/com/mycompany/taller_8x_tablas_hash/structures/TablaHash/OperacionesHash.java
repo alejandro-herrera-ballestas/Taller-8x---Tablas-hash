@@ -13,7 +13,10 @@ public class OperacionesHash implements FuncionHash {
     private Lista[] slotsDivision;
     private Lista[] slotsMultiplicacion;
 
-    // m = 256 por defecto, y sin función hash activa
+    // Contadores de colisiones
+    private int contadorColisionesDivision;
+    private int contadorColisionesMultiplicacion;
+    
     public OperacionesHash() {
         this(256, null);
     }
@@ -27,8 +30,10 @@ public class OperacionesHash implements FuncionHash {
         this.funcion = funcion;
         this.slotsDivision = new Lista[m];
         this.slotsMultiplicacion = new Lista[m];
+        this.contadorColisionesDivision = 0;
+        this.contadorColisionesMultiplicacion = 0;
 
-        // un slot para cada tipo de colisión
+        // Cada posición inicia con su propia lista enlazada vacía
         for (int i = 0; i < m; i++) {
             this.slotsDivision[i] = new Lista();
             this.slotsMultiplicacion[i] = new Lista();
@@ -41,7 +46,7 @@ public class OperacionesHash implements FuncionHash {
         if (this.funcion != null) {
             return this.funcion.hash(k, m);
         }
-        return hashDivision(k, m); // Por defecto usa división
+        return hashDivision(k, m);
     }
 
     // Función Hash por División
@@ -55,11 +60,10 @@ public class OperacionesHash implements FuncionHash {
         return (int) Math.floor(m * Amod1);
     }
 
-    // verificar colisiones
+    // verificar colisiones, true si hay colisión, false si no hay colisión
     public boolean verificarColisionDivision(int posDiv) {
         return !slotsDivision[posDiv].estaVacia();
     }
-
     public boolean verificarColisionMultiplicacion(int posMult) {
         return !slotsMultiplicacion[posMult].estaVacia();
     }
@@ -68,17 +72,34 @@ public class OperacionesHash implements FuncionHash {
         int posDiv = hashDivision(k, this.m);
         int posMult = hashMultiplicacion(k, this.m);
 
-        // 1. Inserción y reporte para División
+        // verificar colisiones y actualizar contadores
         if (verificarColisionDivision(posDiv)) {
-            System.out.println("[División] Colisión detectada en la posición " + posDiv + " para la llave: " + k);
+            contadorColisionesDivision++; 
+            System.out.println("[División] ¡COLISIÓN DETECTADA! Slot: " + posDiv + 
+                               " | Llave: " + k + 
+                               " | Total colisiones Div: " + contadorColisionesDivision);
+        } else {
+            System.out.println("[División] Sin colisión. Elemento insertado en slot libre: " + posDiv);
         }
+        // adicionamos al final de la lista del slot posDiv
         slotsDivision[posDiv].adicionar(new Nodo<>(k));
 
-        // 2. Inserción y reporte para Multiplicación
         if (verificarColisionMultiplicacion(posMult)) {
-            System.out.println("[Multiplicación] Colisión detectada en la posición " + posMult + " para la llave: " + k);
+            contadorColisionesMultiplicacion++; 
+            System.out.println("[Multiplicación] ¡COLISIÓN DETECTADA! Slot: " + posMult + 
+                               " | Llave: " + k + 
+                               " | Total colisiones Mult: " + contadorColisionesMultiplicacion);
+        } else {
+            System.out.println("[Multiplicación] Sin colisión. Elemento insertado en slot libre: " + posMult);
         }
+        // adicionamos al final de la lista del slot posMult
         slotsMultiplicacion[posMult].adicionar(new Nodo<>(k));
+    
+    }
+
+    public void reiniciarContadores() {
+        this.contadorColisionesDivision = 0;
+        this.contadorColisionesMultiplicacion = 0;
     }
 
     public void setFuncion(FuncionHash f) { 
