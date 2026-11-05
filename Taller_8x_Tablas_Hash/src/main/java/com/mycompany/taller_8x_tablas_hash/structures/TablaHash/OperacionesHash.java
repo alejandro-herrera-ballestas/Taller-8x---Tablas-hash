@@ -98,6 +98,45 @@ public class OperacionesHash implements FuncionHash {
     
     }
 
+    // borrar elemento de la tabla hash y manejar colisiones
+    public void borrarElemento(int k) {
+        int posDiv = hashDivision(k, this.m);
+        int posMult = hashMultiplicacion(k, this.m);
+
+        // eliminar de la lista del slot posDiv
+        if (slotsDivision[posDiv].eliminar(k)) {
+            System.out.println("[División] Elemento eliminado: " + k + " del slot: " + posDiv);
+        } else {
+            System.out.println("[División] Elemento no encontrado: " + k + " en el slot: " + posDiv);
+        }
+
+        // eliminar de la lista del slot posMult
+        if (slotsMultiplicacion[posMult].eliminar(k)) {
+            System.out.println("[Multiplicación] Elemento eliminado: " + k + " del slot: " + posMult);
+        } else {
+            System.out.println("[Multiplicación] Elemento no encontrado: " + k + " en el slot: " + posMult);
+        }
+    }
+
+    public void buscarElemento(int k) {
+        int posDiv = hashDivision(k, this.m);
+        int posMult = hashMultiplicacion(k, this.m);
+
+        // buscar en la lista del slot posDiv
+        if (slotsDivision[posDiv].buscar(k)) {
+            System.out.println("[División] Elemento encontrado: " + k + " en el slot: " + posDiv);
+        } else {
+            System.out.println("[División] Elemento no encontrado: " + k + " en el slot: " + posDiv);
+        }
+
+        // buscar en la lista del slot posMult
+        if (slotsMultiplicacion[posMult].buscar(k)) {
+            System.out.println("[Multiplicación] Elemento encontrado: " + k + " en el slot: " + posMult);
+        } else {
+            System.out.println("[Multiplicación] Elemento no encontrado: " + k + " en el slot: " + posMult);
+        }
+    }
+
     // mostrar el total de colisiones para cada función hash
     public int getContadorColisionesDivision() { 
         return contadorColisionesDivision;
