@@ -97,6 +97,17 @@ public class OperacionesHash implements FuncionHash {
     
     }
 
+    // mostrar el total de colisiones para cada función hash
+    public int getContadorColisionesDivision() { 
+        return contadorColisionesDivision;
+    }
+
+    public int getContadorColisionesMultiplicacion() {
+        return contadorColisionesMultiplicacion;
+    }
+    // hasta aqui
+
+    // reiniciar el contador de colisiones para cada función hash
     public void reiniciarContadores() {
         this.contadorColisionesDivision = 0;
         this.contadorColisionesMultiplicacion = 0;
