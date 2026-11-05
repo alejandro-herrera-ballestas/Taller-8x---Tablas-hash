@@ -1,4 +1,4 @@
-package com.mycompany.taller_8x_tablas_hash.structures.TablaHash;
+package com.mycompany.taller_8x_tablas_hash.structures;
 
 public class Node{
 	public long datos;
