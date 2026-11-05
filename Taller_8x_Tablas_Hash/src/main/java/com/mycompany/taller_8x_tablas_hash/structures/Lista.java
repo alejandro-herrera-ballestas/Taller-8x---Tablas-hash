@@ -62,7 +62,7 @@ public class Lista <T>{
 	 * 
 	 */
 	
-        public boolean eliminar(){
+        public boolean eliminar(int k){
         
             Nodo<T> temp = null;
 	    temp=primerNodo;
