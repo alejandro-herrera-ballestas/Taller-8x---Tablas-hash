@@ -1,13 +1,12 @@
 package com.mycompany.taller_8x_tablas_hash.structures.TablaHash;
+import com.mycompany.taller_8x_tablas_hash.models.leerCSVascii;
 /**
  *
  * @author ismae
  */
 public class AppPrueba {
     public static void main(String[] args) {
-        int k = TablaHash.calcularLlave("05-9165610");
-        System.out.println(k);                                        
-        System.out.println(new HashMultiplicacion().hash(k, 256));    
-        System.out.println(new HashDivision().hash(k, 256));          
+        int k = leerCSVascii.calcularLlave("05-9165610");
+        System.out.println("Llave calculada: " + k);       
     }
 }

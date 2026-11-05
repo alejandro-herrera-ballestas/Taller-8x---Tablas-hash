@@ -44,6 +44,14 @@ public class OperacionesHash {
         return funcion.hash(k, this.m);
     }
 
+    public static int stringToAsciiKey(String texto) {
+    int k = 0;
+    for (int i = 0; i < texto.length(); i++) {
+        k += (int) texto.charAt(i); // Suma los códigos ASCII de cada carácter
+    }
+    return k;
+}
+
     public void setFuncion(FuncionHash f) { this.funcion = f; }
     public int getM() { return m; }
     public Lista[] getSlots() { return slots; }

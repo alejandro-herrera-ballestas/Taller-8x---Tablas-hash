@@ -10,9 +10,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class controllers implements ActionListener{
     
     private VentanaPrincipal vista;
-    private TablaHash modelo;
+    private OperacionesHash modelo;
 
-    public controllers(VentanaPrincipal vista, TablaHash modelo) {
+    public controllers(VentanaPrincipal vista, OperacionesHash modelo) {
         this.vista = vista;
         this.modelo = modelo;
         
