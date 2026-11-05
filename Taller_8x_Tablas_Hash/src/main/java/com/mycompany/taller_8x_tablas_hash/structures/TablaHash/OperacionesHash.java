@@ -40,7 +40,7 @@ public class OperacionesHash implements FuncionHash {
         }
     }
 
-    // Método de la interfaz FuncionHash implementado
+    // función hash que delega a la función hash seleccionada o usa la función por defecto (división)
     @Override
     public int hash(int k, int m) {
         if (this.funcion != null) {
@@ -68,9 +68,10 @@ public class OperacionesHash implements FuncionHash {
         return !slotsMultiplicacion[posMult].estaVacia();
     }
 
+    // insertar elemento en la tabla hash y manejar colisiones
     public void insertarElemento(int k) {
-        int posDiv = hashDivision(k, this.m);
-        int posMult = hashMultiplicacion(k, this.m);
+        int posDiv = hashDivision(k, this.m);   // calcular posición usando función hash por división
+        int posMult = hashMultiplicacion(k, this.m);    // calcular posición usando función hash por multiplicación
 
         // verificar colisiones y actualizar contadores
         if (verificarColisionDivision(posDiv)) {
