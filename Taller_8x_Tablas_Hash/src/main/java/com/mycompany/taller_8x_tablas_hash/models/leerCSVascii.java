@@ -46,7 +46,7 @@ public class leerCSVascii  {
                 }
             }
         } catch (IOException e) {
-            System.out.println("Error leyendo el archivo: " + e.getMessage());
+            System.out.println("Error leyendo el archivo: " + e.getMessage()); // error al leer el archivo
         }
     }
 }
