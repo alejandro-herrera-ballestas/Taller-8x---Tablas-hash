@@ -1,7 +1,7 @@
 package com.mycompany.taller_8x_tablas_hash.structures.TablaHash;
 
-import co.edu.unicartagena.list.Lista;
-import co.edu.unicartagena.list.Nodo;
+import com.mycompany.taller_8x_tablas_hash.structures.Lista;
+import com.mycompany.taller_8x_tablas_hash.structures.Nodo;
 
 /**
  *
