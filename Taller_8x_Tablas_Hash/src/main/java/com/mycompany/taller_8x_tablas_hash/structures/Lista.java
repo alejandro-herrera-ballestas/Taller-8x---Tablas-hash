@@ -158,8 +158,8 @@ public class Lista <T>{
 		Nodo<T> temp = primerNodo;	
 		
     	while (temp != null) {	// mientras temp no sea nulo, se recorre la lista
-        sb.append(";").append(temp.getDato());	// se agrega el dato del nodo actual al StringBuilder
-        temp = temp.sig; // Avanza usando el atributo sig de tu clase
+        	sb.append(";").append(temp.getDato());	// se agrega el dato del nodo actual al StringBuilder
+        	temp = temp.sig; // Avanza usando el atributo sig de tu clase
     	}	
 
     	return sb.toString();
