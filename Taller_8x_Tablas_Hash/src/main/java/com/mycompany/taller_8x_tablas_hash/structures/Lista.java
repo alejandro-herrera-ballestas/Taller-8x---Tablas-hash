@@ -151,7 +151,6 @@ public class Lista <T>{
 			return "";
 		}
 		
-		// mas eficiente para los archivos con el append
 		// temp es un nodo temporal para recorrer la lista
 		// se empieza con el primer nodo
 		StringBuilder sb = new StringBuilder();	
