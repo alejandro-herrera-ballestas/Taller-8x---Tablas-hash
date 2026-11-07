@@ -1,5 +1,9 @@
 package com.mycompany.taller_8x_tablas_hash.structures.TablaHash;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import com.mycompany.taller_8x_tablas_hash.structures.Lista;
 import com.mycompany.taller_8x_tablas_hash.structures.Nodo;
 
@@ -142,6 +146,26 @@ public class OperacionesHash implements FuncionHash {
             System.out.println("[Multiplicación] Registro con ID " + k + " NO encontrado.");
         }
         return resultado;
+    }
+
+    // guardar en csv
+    public void exportarTablaCSV(Lista[] slots, String nombreArchivo) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(nombreArchivo))) {
+            // Encabezado de columnas
+            writer.write("Slot;Cabeza (Placa/Llave);Colision_1;Colision_2;Colision_N...\n");
+
+            for (int i = 0; i < m; i++) {
+                // slots[i].aCSV() muestra la lista completa del slot i en formato CSV, es decir
+                // muestra la cabeza y todas las colisiones en ese slot
+                writer.write("Slot " + i + slots[i].aCSV());
+                writer.newLine();
+            }
+
+            System.out.println("Archivo CSV generado exitosamente: " + nombreArchivo);
+
+        } catch (IOException e) {
+            System.out.println("Error al exportar la tabla a CSV: " + e.getMessage());
+        }
     }
 
     // mostrar el total de colisiones para cada función hash
