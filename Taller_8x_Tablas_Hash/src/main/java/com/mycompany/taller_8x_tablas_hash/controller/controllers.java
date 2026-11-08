@@ -122,4 +122,10 @@ public class controllers implements ActionListener{
                        
         JOptionPane.showMessageDialog(vista, mensaje, "Información Técnica", JOptionPane.INFORMATION_MESSAGE);
     }
+
+    //funcion para insertar un elemento en la tabla hash
+    private void insertarElementoHash(int k) {
+        modelo.insertarElemento(k);
+        actualizarVistaTabla();
+    }
 }
