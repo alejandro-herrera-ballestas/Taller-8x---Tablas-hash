@@ -73,9 +73,8 @@ public class OperacionesHash implements FuncionHash {
     }
 
     // insertar elemento en la tabla hash y manejar colisiones
-    public void insertarElemento(int k) {
+    public void insertarElementoDiv(int k) {
         int posDiv = hashDivision(k, this.m);   // calcular posición usando función hash por división
-        int posMult = hashMultiplicacion(k, this.m);    // calcular posición usando función hash por multiplicación
 
         // verificar colisiones y actualizar contadores
         if (verificarColisionDivision(posDiv)) {
@@ -89,6 +88,12 @@ public class OperacionesHash implements FuncionHash {
         // adicionamos al final de la lista del slot posDiv
         slotsDivision[posDiv].adicionar(new Nodo<>(k));
 
+    }
+
+    public void insertarElementoMult(int k) {
+        int posMult = hashMultiplicacion(k, this.m);    // calcular posición usando función hash por multiplicación
+
+        // verificar colisiones y actualizar contadores
         if (verificarColisionMultiplicacion(posMult)) {
             contadorColisionesMultiplicacion++; 
             System.out.println("[Multiplicación] ¡COLISIÓN DETECTADA! Slot: " + posMult + 
@@ -99,7 +104,6 @@ public class OperacionesHash implements FuncionHash {
         }
         // adicionamos al final de la lista del slot posMult
         slotsMultiplicacion[posMult].adicionar(new Nodo<>(k));
-    
     }
 
     // borrar elemento de la tabla hash y manejar colisiones
