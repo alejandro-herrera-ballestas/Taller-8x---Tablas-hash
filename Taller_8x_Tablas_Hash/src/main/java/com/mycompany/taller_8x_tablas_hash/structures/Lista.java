@@ -129,8 +129,8 @@ public class Lista <T>{
 			System.out.println("La Lista esta vacia");
 	}
 
-	public Object buscar(int k) {
-    if (estaVacia()) {
+public Object buscar(int k) {
+        if (estaVacia()) {
         return null;
     }
     

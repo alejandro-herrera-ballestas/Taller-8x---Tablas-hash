@@ -17,4 +17,7 @@ public class Node{
 	public long getDato(){
 		return this.datos;
 	}
+        public void setDato(long datos){
+            this.datos = datos;
+        }
 }

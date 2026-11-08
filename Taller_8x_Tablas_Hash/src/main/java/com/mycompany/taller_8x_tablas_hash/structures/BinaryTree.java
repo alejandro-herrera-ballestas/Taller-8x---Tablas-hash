@@ -17,8 +17,22 @@ public class BinaryTree {
 	public int nodos=0;
 	
 	public BinaryTree(){
+            Limpiar();
 	}
-	
+        
+        public void Limpiar(){
+            raiz = null;
+            altura = 0;
+            numeroMenor = 0;
+            numeroMayor = 0;
+            nivelNumeroMenor=0;
+            nivelNumeroMayor=0;
+            nivel=0;
+            nodos=0;
+        }
+        
+        
+        	     
 	public void adicionar (long valor, Node raiz, int nivel){
 		if (raiz==null){
 			this.raiz=new Node(valor);
@@ -54,6 +68,106 @@ public class BinaryTree {
 		} 
 	}
 	
+        public static Object buscar(long k, Node raiz){
+            if (raiz == null)
+                return null;
+
+            long dato = (long)(Long) raiz.getDato();
+
+            if (k == dato) {
+                return raiz.getDato();
+            } else if (k < dato) {
+                return buscar(k, raiz.izquierdo);
+            } else if (k > dato) {
+                return buscar(k, raiz.derecho);
+            }
+
+            return null;
+        }
+        
+        public boolean eliminar(long k, Node raiz){
+            if (raiz == null)
+                return false;
+
+
+            if (k == raiz.getDato()) {
+                System.out.println("Encontrado");
+                
+                Node temporal = null;
+                // Sin hijos o con un solo hijo
+                if(raiz.izquierdo == null ){
+                    
+                    // Debugs
+                    /*System.out.println("Izquierdo");
+                    System.out.println("Raiz:" + raiz.getDato());
+                    System.out.println("Raiz Derecho1: " + raiz.derecho.getDato());
+                    System.out.println("Raiz Derecho2: " + raiz.derecho.izquierdo.getDato());
+                    System.out.println("Raiz Izquierdo: " + raiz.izquierdo.getDato());
+                    */
+                    
+                    temporal = raiz.derecho;
+                    
+                    System.out.println("Valor Temporal: " + temporal);
+                    
+                    raiz.setDato(temporal.getDato());
+                    
+                    raiz.derecho = null;
+                 
+                    raiz = temporal;
+                    
+                    
+                    
+                }else if(raiz.derecho == null){
+                    // Debugs
+                    /*
+                    System.out.println("Derecho");
+                    System.out.println("Raiz:" + raiz.getDato());
+                    System.out.println("Raiz Izquierdo: " + raiz.izquierdo.getDato());
+                    */
+                    temporal = raiz.izquierdo;
+                    
+                    raiz.setDato(temporal.getDato());
+                  
+                    raiz.izquierdo = null;
+                    raiz = temporal;
+                    
+                }
+                // Con dos hijos
+                else{
+                    /*System.out.println("Hijos");
+                    */
+                    
+                    temporal = inorderEliminar(raiz.derecho);
+                    
+                    raiz.setDato(temporal.getDato());
+
+                    raiz = temporal;
+                }
+                
+                return true;
+            } else if (k < raiz.getDato()) {
+                return (boolean) eliminar(k, raiz.izquierdo);
+            } else if (k > raiz.getDato()) {
+                return (boolean) eliminar(k, raiz.derecho);
+            }
+
+            return false;
+        }
+        
+        public Node inorderEliminar(Node raiz){
+                Node temp = null;
+		if(raiz!=null){
+                    if(raiz.izquierdo != null){
+                        inorderEliminar(raiz.izquierdo);
+                }else
+                    temp = raiz;
+                    raiz = null;
+                    return temp;
+		}
+            return null;
+	}
+        
+        
 	public int getNumeroNodos(){
 		return this.nodos;
 	}
