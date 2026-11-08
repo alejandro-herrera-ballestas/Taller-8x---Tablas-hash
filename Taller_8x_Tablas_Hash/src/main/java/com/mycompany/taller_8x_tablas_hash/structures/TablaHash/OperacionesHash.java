@@ -148,7 +148,7 @@ public class OperacionesHash implements FuncionHash {
         return resultado;
     }
 
-    // guardar en csv
+    // guardar en csv, metodo generico para exportar cualquiera
     public void exportarTablaCSV(Lista[] slots, String nombreArchivo) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(nombreArchivo))) {
             // Encabezado de columnas
@@ -166,6 +166,16 @@ public class OperacionesHash implements FuncionHash {
         } catch (IOException e) {
             System.out.println("Error al exportar la tabla a CSV: " + e.getMessage());
         }
+    }
+
+    // exportar tabla de división a CSV
+    public void exportarTablaDivisionCSV(String nombreArchivo) {
+        exportarTablaCSV(slotsDivision, nombreArchivo);
+    }
+
+    // exportar tabla de multiplicación a CSV
+    public void exportarTablaMultiplicacionCSV(String nombreArchivo) {
+        exportarTablaCSV(slotsMultiplicacion, nombreArchivo);
     }
 
     // mostrar el total de colisiones para cada función hash
