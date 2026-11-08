@@ -13,11 +13,12 @@ public class leerCSVascii {
     public static int calcularLlave(String texto) {
         int k = 0;
         for (int i = 0; i < texto.length(); i++) {
-            k += (int) texto.charAt(i);
+            k =(k * 2) + (int) texto.charAt(i);
         }
         return k;
     }
-
+    
+    
     public static void main(String[] args) {
         JFileChooser fc = new JFileChooser();
         fc.setFileFilter(new FileNameExtensionFilter("Archivos CSV", "csv"));   // Filtro para mostrar solo archivos CSV
