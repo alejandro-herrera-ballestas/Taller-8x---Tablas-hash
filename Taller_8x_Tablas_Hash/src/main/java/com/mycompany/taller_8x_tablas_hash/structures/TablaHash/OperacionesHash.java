@@ -100,6 +100,13 @@ public class OperacionesHash implements FuncionHash {
         } else {
             System.out.println("[División] Elemento no encontrado: " + placa + " en el slot: " + posDiv);
         }
+        verificarColisionDivision(posDiv); // Verifica si aún hay colisiones en el slot posDiv
+        if (!verificarColisionDivision(posDiv)) {
+            System.out.println("[División] No hay más colisiones en el slot: " + posDiv);
+        }else {
+            System.out.println("[División] Aún hay colisiones en el slot: " + posDiv);
+        }
+        contadorColisionesDivision = Math.max(0, contadorColisionesDivision - 1); // Decrementa el contador de colisiones
 
         // eliminar de la lista del slot posMult
         if (slotsMultiplicacion[posMult].eliminar(placa)) {
@@ -107,6 +114,13 @@ public class OperacionesHash implements FuncionHash {
         } else {
             System.out.println("[Multiplicación] Elemento no encontrado: " + placa + " en el slot: " + posMult);
         }
+        verificarColisionMultiplicacion(posMult); // Verifica si aún hay colisiones en el slot posMult
+        if (!verificarColisionMultiplicacion(posMult)) {
+            System.out.println("[Multiplicación] No hay más colisiones en el slot: " + posMult);
+        }else {
+            System.out.println("[Multiplicación] Aún hay colisiones en el slot: " + posMult);
+        }
+        contadorColisionesMultiplicacion = Math.max(0, contadorColisionesMultiplicacion - 1); // Decrementa el contador de colisiones
     }
 
     public Object buscarElemento(int k, String placa) {
