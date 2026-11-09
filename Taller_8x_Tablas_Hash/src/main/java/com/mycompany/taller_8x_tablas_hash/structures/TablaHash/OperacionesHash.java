@@ -135,6 +135,27 @@ public class OperacionesHash implements FuncionHash {
         return resultado;
     }
 
+    public Object buscarElemento(int k, String placa) {
+        int posDiv = hashDivision(k, this.m);
+        int posMult = hashMultiplicacion(k, this.m);
+        Object resultadoDiv = slotsDivision[posDiv].buscar(k);
+        Object resultadoMult = slotsMultiplicacion[posMult].buscar(k);
+
+        if (resultadoDiv != null) {
+            System.out.println("[División] Placa " + placa + " encontrada en el slot " + posDiv);
+        } else {
+            System.out.println("[División] Placa " + placa + " NO encontrada.");
+        }
+
+        if (resultadoMult != null) {
+            System.out.println("[Multiplicación] Placa " + placa + " encontrada en el slot " + posMult);
+        } else {
+            System.out.println("[Multiplicación] Placa " + placa + " NO encontrada.");
+        }
+
+        return (resultadoDiv != null) ? resultadoDiv : resultadoMult;
+    }
+
     // guardar en csv, metodo generico para exportar cualquiera
     public void exportarTablaCSV(Lista[] slots, String nombreArchivo) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(nombreArchivo))) {
