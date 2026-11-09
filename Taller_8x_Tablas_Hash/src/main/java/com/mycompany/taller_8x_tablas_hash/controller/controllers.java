@@ -88,7 +88,7 @@ public class controllers implements ActionListener{
                 int k = com.mycompany.taller_8x_tablas_hash.models.leerCSVascii.calcularLlave(placaBuscar.trim());
                 Object resultado = modelo.buscarElemento(k, placaBuscar.trim());
                 if (resultado != null) {
-                    javax.swing.JOptionPane.showMessageDialog(vista, "Placa encontrada: " + resultado.toString());
+                    javax.swing.JOptionPane.showMessageDialog(vista, "Placa encontrada: " + resultado.toString() + "en la posicion :" + k);
                 } else {
                     javax.swing.JOptionPane.showMessageDialog(vista, "Placa NO encontrada.");
                 }
