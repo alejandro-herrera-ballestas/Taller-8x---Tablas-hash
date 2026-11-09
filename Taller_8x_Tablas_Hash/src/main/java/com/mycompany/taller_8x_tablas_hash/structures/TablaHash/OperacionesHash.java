@@ -73,21 +73,22 @@ public class OperacionesHash implements FuncionHash {
     }
 
     // insertar elemento en la tabla hash y manejar colisiones
-    public void insertarElemento(int k,String placa) {
-        int posDiv = hashDivision(k, this.m);   // calcular posición usando función hash por división
-        int posMult = hashMultiplicacion(k, this.m);    // calcular posición usando función hash por multiplicación
+    public void insertarElemento(int k, String placa) {
+        int posDiv = hashDivision(k, this.m);   
+        int posMult = hashMultiplicacion(k, this.m);    
 
+        // div
         if (verificarColisionDivision(posDiv)) {
             contadorColisionesDivision++; 
-         } 
-         slotsDivision[posDiv].adicionarFinal(new Nodo<>(placa));
+        } 
+        slotsDivision[posDiv].adicionarFinal(new Nodo<>(placa));
 
-         if (verificarColisionMultiplicacion(posMult)) {
+        // mul
+        if (verificarColisionMultiplicacion(posMult)) {
             contadorColisionesMultiplicacion++; 
-         } 
-         slotsMultiplicacion[posMult].adicionarFinal(new Nodo<>(placa));
-     }
-
+        } 
+        slotsMultiplicacion[posMult].adicionarFinal(new Nodo<>(placa));
+    }
     // borrar elemento de la tabla hash y manejar colisiones
     public void borrarElemento(int k,String placa) {
         int posDiv = hashDivision(k, this.m);
