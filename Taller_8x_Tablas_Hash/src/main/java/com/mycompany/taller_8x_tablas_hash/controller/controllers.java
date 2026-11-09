@@ -80,6 +80,20 @@ public class controllers implements ActionListener{
                 javax.swing.JOptionPane.showMessageDialog(vista, "Comando de eliminación ejecutado.\nRevisa la consola para ver detalles del Slot.");
             }
         }
+
+        //Search
+        else if (e.getSource() == vista.getBtnSearch()) {
+            String placaBuscar = javax.swing.JOptionPane.showInputDialog(vista, "Ingresa la placa exacta que deseas buscar:");
+            if (placaBuscar != null && !placaBuscar.trim().isEmpty()) {
+                int k = com.mycompany.taller_8x_tablas_hash.models.leerCSVascii.calcularLlave(placaBuscar.trim());
+                Object resultado = modelo.buscarElemento(k, placaBuscar.trim());
+                if (resultado != null) {
+                    javax.swing.JOptionPane.showMessageDialog(vista, "Placa encontrada: " + resultado.toString());
+                } else {
+                    javax.swing.JOptionPane.showMessageDialog(vista, "Placa NO encontrada.");
+                }
+            }
+        }
     }
     
     private void abrirArchivoCSV() {
