@@ -109,32 +109,6 @@ public class OperacionesHash implements FuncionHash {
         }
     }
 
-    // Buscar en la tabla de División
-    public Object buscarElementoDivision(int k) {
-        int pos = hashDivision(k, this.m);
-        Object resultado = slotsDivision[pos].buscar(k);
-
-        if (resultado != null) {
-            System.out.println("[División] Registro con ID " + k + " encontrado en el slot " + pos);
-        } else {
-            System.out.println("[División] Registro con ID " + k + " NO encontrado.");
-        }
-        return resultado;
-    }
-
-    // Buscar en la tabla de Multiplicación
-    public Object buscarElementoMultiplicacion(int k) {
-        int pos = hashMultiplicacion(k, this.m);
-        Object resultado = slotsMultiplicacion[pos].buscar(k);
-
-        if (resultado != null) {
-            System.out.println("[Multiplicación] Registro con ID " + k + " encontrado en el slot " + pos);
-        } else {
-            System.out.println("[Multiplicación] Registro con ID " + k + " NO encontrado.");
-        }
-        return resultado;
-    }
-
     public Object buscarElemento(int k, String placa) {
         int posDiv = hashDivision(k, this.m);
         int posMult = hashMultiplicacion(k, this.m);
