@@ -26,39 +26,75 @@ public class controllers implements ActionListener{
         this.vista.getBtnSave().addActionListener(this);
         this.vista.getBtnClose().addActionListener(this);
         this.vista.getBtnInfo().addActionListener(this); 
+        //para pasar de division a multiplicacion
+        this.vista.getRadioDivision().addActionListener(e -> actualizarVistaTabla());
+        this.vista.getRadioMultiplicacion().addActionListener(e -> actualizarVistaTabla());
     }
     
     @Override
-    public void actionPerformed(ActionEvent e){
-        //Abrir csv
+    public void actionPerformed(java.awt.event.ActionEvent e) {
+        
+        //Open
         if (e.getSource() == vista.getBtnOpen()) {
             abrirArchivoCSV();
         }
-        //cerrar csv
-        if (e.getSource() == vista.getBtnClose()) {
-            System.exit(0); 
-        }   
-        //mostrar ficha de info
-        if (e.getSource() == vista.getBtnInfo()) {
-           mostrarInfoTecnica();
-        } 
+        
+        //Close
+        else if (e.getSource() == vista.getBtnClose()) {
+            System.exit(0); // 
+        }
+        
+        //Save
+        else if (e.getSource() == vista.getBtnSave()) {
+            String nombreArchivo = javax.swing.JOptionPane.showInputDialog(vista, "Ingresa el nombre del archivo (ej. exportacion.csv):", "Guardar CSV", javax.swing.JOptionPane.QUESTION_MESSAGE);
+            if (nombreArchivo != null && !nombreArchivo.trim().isEmpty()) {
+                if (!nombreArchivo.endsWith(".csv")) nombreArchivo += ".csv"; 
+                
+                if (vista.getRadioDivision().isSelected()) {
+                    modelo.exportarTablaDivisionCSV(nombreArchivo);
+                } else {
+                    modelo.exportarTablaMultiplicacionCSV(nombreArchivo);
+                }
+                javax.swing.JOptionPane.showMessageDialog(vista, "Archivo " + nombreArchivo + " guardado exitosamente.");
+            }
+        }
+        
+        //Insert
+        else if (e.getSource() == vista.getBtnInsert()) {
+            String nuevaPlaca = javax.swing.JOptionPane.showInputDialog(vista, "Ingresa la nueva placa a insertar (ej. 12-3456789):");
+            if (nuevaPlaca != null && !nuevaPlaca.trim().isEmpty()) {
+                int k = com.mycompany.taller_8x_tablas_hash.models.leerCSVascii.calcularLlave(nuevaPlaca.trim());
+                modelo.insertarElemento(k, nuevaPlaca.trim());
+                actualizarVistaTabla(); // Refresca la T visual
+                javax.swing.JOptionPane.showMessageDialog(vista, "Placa insertada correctamente.");
+            }
+        }
+        
+        //Delete
+        else if (e.getSource() == vista.getBtnDelete()) {
+            String placaBorrar = javax.swing.JOptionPane.showInputDialog(vista, "Ingresa la placa exacta que deseas eliminar:");
+            if (placaBorrar != null && !placaBorrar.trim().isEmpty()) {
+                int k = com.mycompany.taller_8x_tablas_hash.models.leerCSVascii.calcularLlave(placaBorrar.trim());
+                modelo.borrarElemento(k, placaBorrar.trim());
+                actualizarVistaTabla(); // Refresca la T visual
+                javax.swing.JOptionPane.showMessageDialog(vista, "Comando de eliminación ejecutado.\nRevisa la consola para ver detalles del Slot.");
+            }
+        }
     }
+    
     private void abrirArchivoCSV() {
-        JFileChooser fileChooser = new JFileChooser();
+        javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
         fileChooser.setDialogTitle("Seleccionar archivo CSV");
-        fileChooser.setFileFilter(new FileNameExtensionFilter("Archivos CSV", "csv"));
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Archivos CSV", "csv"));
         
-        int seleccion = fileChooser.showOpenDialog(vista);
-        
-        if (seleccion == JFileChooser.APPROVE_OPTION) {
+        if (fileChooser.showOpenDialog(vista) == javax.swing.JFileChooser.APPROVE_OPTION) {
             String ruta = fileChooser.getSelectedFile().getAbsolutePath();
             vista.getLblRutaArchivo().setText(" Ruta: " + ruta);
             
-            // Usamos invokeLater para que la ventana del explorador se cierre al instante
             javax.swing.SwingUtilities.invokeLater(() -> {
                 try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(ruta))) {
                     String linea;
-                    modelo.reiniciarContadores(); // Limpiar la memoria antes de cargar nuevos datos
+                    modelo.reiniciarContadores(); // Limpiamos memoria
                     
                     while ((linea = br.readLine()) != null) {
                         if (linea.trim().isEmpty()) continue;
@@ -66,47 +102,66 @@ public class controllers implements ActionListener{
                         String[] columnas = linea.split(";");
                         if (columnas.length == 0) continue;
                         
-                        String plate = columnas[0].trim();
+                        String plate = columnas[0].trim(); // Extraemos la placa
                         
-                        // Calculamos la llave llamando a la clase de tu compañero
+                        // (Usando el Radix-2 que actualizaste)
                         int k = com.mycompany.taller_8x_tablas_hash.models.leerCSVascii.calcularLlave(plate);
                         
-                        // Insertamos en la Tabla Hash
-                        modelo.insertarElemento(k); 
+                        // Insertamos pasando LA LLAVE y LA PLACA
+                        modelo.insertarElemento(k, plate); 
                     }
                     
-                    // Actualizamos la pantalla con los resultados
                     actualizarVistaTabla();
-                    javax.swing.JOptionPane.showMessageDialog(vista, "Archivo cargado exitosamente.", "Éxito", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                    javax.swing.JOptionPane.showMessageDialog(vista, "Datos cargados y procesados en la Tabla Hash.", "Éxito", javax.swing.JOptionPane.INFORMATION_MESSAGE);
                     
                 } catch (Exception ex) {
-                    javax.swing.JOptionPane.showMessageDialog(vista, "Error leyendo el CSV: " + ex.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                    javax.swing.JOptionPane.showMessageDialog(vista, "Error: " + ex.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
                 }
             });
         }
     }
 
-    // Método para actualizar los números y el recuadro "T"
-    private void actualizarVistaTabla() {
+       // Método para actualizar los números y el recuadro "T"
+        private void actualizarVistaTabla() {
         StringBuilder textoVisual = new StringBuilder();
+        com.mycompany.taller_8x_tablas_hash.structures.Lista[] slotsSeleccionados;
         int colisionesTotales = 0;
-        // Verificamos qué función matemática está seleccionada en los Radio Buttons
+        
         if (vista.getRadioDivision().isSelected()) {
+            slotsSeleccionados = modelo.getSlotsDivision();
             colisionesTotales = modelo.getContadorColisionesDivision();
-            textoVisual.append("-- Mostrando Memoria (Método: División) --\n\n");
         } else {
+            slotsSeleccionados = modelo.getSlotsMultiplicacion();
             colisionesTotales = modelo.getContadorColisionesMultiplicacion();
-            textoVisual.append("-- Mostrando Memoria (Método: Multiplicación) --\n\n");
         }
-        //Actualizar colicione
+        
+        // Actualizar contador 
         vista.getLblNumColisiones().setText(String.valueOf(colisionesTotales));
-        //Imprimimos un texto que indica que hay datos cargados
-        textoVisual.append("Los datos han sido cargados en la memoria (").append(modelo.getM()).append(" slots).\n");
-        textoVisual.append("Total de colisiones generadas: ").append(colisionesTotales).append("\n\n");
-        textoVisual.append("(Nota: Falta pintar los nodos exactos aquí hasta analizar la clase Lista)");
+        
+        // Dibujar la tabla
+        for (int i = 0; i < slotsSeleccionados.length; i++) {
+            com.mycompany.taller_8x_tablas_hash.structures.Lista listaActual = slotsSeleccionados[i];
+            
+            if (!listaActual.estaVacia()) {
+                textoVisual.append(String.format("[ Slot %3d ]", i));
+                
+                String datosCSV = listaActual.aCSV(); // Devuelve algo como ";05-9165610;05-1234567"
+                String[] nodos = datosCSV.split(";"); // Lo separamos en un arreglo
+                
+                // Recorremos el arreglo (empezando en 1 porque el índice 0 queda vacío por el primer ';')
+                for (int j = 1; j < nodos.length; j++) {
+                    textoVisual.append(" -> [ ").append(nodos[j]).append(" ]");
+                }
+                textoVisual.append("\n"); // Salto de línea
+            }
+        }
+        
+        if (textoVisual.length() == 0) {
+            textoVisual.append("Tabla Hash Vacía.");
+        }
         
         vista.getTxtAreaTabla().setText(textoVisual.toString());
-    }
+    }           
     
        //Funcion de ficha tecnica, es un simple agregado del problema
         private void mostrarInfoTecnica() {

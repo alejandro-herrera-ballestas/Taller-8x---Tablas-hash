@@ -73,52 +73,38 @@ public class OperacionesHash implements FuncionHash {
     }
 
     // insertar elemento en la tabla hash y manejar colisiones
-    public void insertarElemento(int k) {
+    public void insertarElemento(int k,String placa) {
         int posDiv = hashDivision(k, this.m);   // calcular posición usando función hash por división
         int posMult = hashMultiplicacion(k, this.m);    // calcular posición usando función hash por multiplicación
 
-        // verificar colisiones y actualizar contadores
         if (verificarColisionDivision(posDiv)) {
             contadorColisionesDivision++; 
-            System.out.println("[División] ¡COLISIÓN DETECTADA! Slot: " + posDiv + 
-                               " | Llave: " + k + 
-                               " | Total colisiones Div: " + contadorColisionesDivision);
-        } else {
-            System.out.println("[División] Sin colisión. Elemento insertado en slot libre: " + posDiv);
-        }
-        // adicionamos al final de la lista del slot posDiv
-        slotsDivision[posDiv].adicionar(new Nodo<>(k));
+         } 
+         slotsDivision[posDiv].adicionarFinal(new Nodo<>(placa));
 
-        if (verificarColisionMultiplicacion(posMult)) {
+         if (verificarColisionMultiplicacion(posMult)) {
             contadorColisionesMultiplicacion++; 
-            System.out.println("[Multiplicación] ¡COLISIÓN DETECTADA! Slot: " + posMult + 
-                               " | Llave: " + k + 
-                               " | Total colisiones Mult: " + contadorColisionesMultiplicacion);
-        } else {
-            System.out.println("[Multiplicación] Sin colisión. Elemento insertado en slot libre: " + posMult);
-        }
-        // adicionamos al final de la lista del slot posMult
-        slotsMultiplicacion[posMult].adicionar(new Nodo<>(k));
-    
-    }
+         } 
+         slotsMultiplicacion[posMult].adicionarFinal(new Nodo<>(placa));
+     }
 
     // borrar elemento de la tabla hash y manejar colisiones
-    public void borrarElemento(int k) {
+    public void borrarElemento(int k,String placa) {
         int posDiv = hashDivision(k, this.m);
         int posMult = hashMultiplicacion(k, this.m);
 
         // eliminar de la lista del slot posDiv
-        if (slotsDivision[posDiv].eliminar(k)) {
-            System.out.println("[División] Elemento eliminado: " + k + " del slot: " + posDiv);
+        if (slotsDivision[posDiv].eliminar(placa)) {
+            System.out.println("[División] Elemento eliminado: " + placa + " del slot: " + posDiv);
         } else {
-            System.out.println("[División] Elemento no encontrado: " + k + " en el slot: " + posDiv);
+            System.out.println("[División] Elemento no encontrado: " + placa + " en el slot: " + posDiv);
         }
 
         // eliminar de la lista del slot posMult
-        if (slotsMultiplicacion[posMult].eliminar(k)) {
-            System.out.println("[Multiplicación] Elemento eliminado: " + k + " del slot: " + posMult);
+        if (slotsMultiplicacion[posMult].eliminar(placa)) {
+            System.out.println("[Multiplicación] Elemento eliminado: " + placa + " del slot: " + posMult);
         } else {
-            System.out.println("[Multiplicación] Elemento no encontrado: " + k + " en el slot: " + posMult);
+            System.out.println("[Multiplicación] Elemento no encontrado: " + placa + " en el slot: " + posMult);
         }
     }
 

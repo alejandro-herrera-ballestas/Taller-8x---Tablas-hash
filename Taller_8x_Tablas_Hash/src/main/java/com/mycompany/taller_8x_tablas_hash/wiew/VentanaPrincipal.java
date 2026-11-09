@@ -14,36 +14,34 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     private void initComponents() {
 
-        // Paleta de colores con java.awt.color
+        // aleta de Colores
         java.awt.Color colorFondo = new java.awt.Color(30, 30, 36);        
         java.awt.Color colorPaneles = new java.awt.Color(43, 43, 54);      
         java.awt.Color colorTextoPrincipal = new java.awt.Color(230, 230, 230); 
         java.awt.Color colorAcento = new java.awt.Color(138, 43, 226);     
         java.awt.Color colorBotones = new java.awt.Color(60, 60, 75);
         
-        // Fuente de letras con java.awt.Font
         java.awt.Font fuenteTitulos = new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 18);
         java.awt.Font fuenteConsola = new java.awt.Font("Consolas", java.awt.Font.PLAIN, 16);
         java.awt.Font fuenteBotones = new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14);
 
-        // Inicialización de Componentes 
-        JPanel panelFile = new JPanel();
+        // Inicialización de Componentes
+        javax.swing.JPanel panelFile = new javax.swing.JPanel();
         panelFile.setBackground(colorPaneles);
-        panelFile.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(colorAcento), "File", 
+        panelFile.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                javax.swing.BorderFactory.createLineBorder(colorAcento), "File", 
                 javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, 
                 fuenteTitulos, colorTextoPrincipal));
         panelFile.setLayout(null); 
         
-        JPanel panelOperations = new JPanel();
+        javax.swing.JPanel panelOperations = new javax.swing.JPanel();
         panelOperations.setBackground(colorPaneles);
-        panelOperations.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(colorAcento), "Operations", 
+        panelOperations.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                javax.swing.BorderFactory.createLineBorder(colorAcento), "Operations", 
                 javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, 
                 fuenteTitulos, colorTextoPrincipal));
         panelOperations.setLayout(null);
         
-        // Botones (agregamos colores y fuentes) 
         btnOpen = crearBotonEstilizado("Open", colorBotones, colorTextoPrincipal, fuenteBotones);
         btnSave = crearBotonEstilizado("Save", colorBotones, colorTextoPrincipal, fuenteBotones);
         btnClose = crearBotonEstilizado("Close", colorBotones, colorTextoPrincipal, fuenteBotones);
@@ -51,67 +49,63 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         btnInsert = crearBotonEstilizado("Insert", colorBotones, colorTextoPrincipal, fuenteBotones);
         btnDelete = crearBotonEstilizado("Delete", colorBotones, colorTextoPrincipal, fuenteBotones);
         btnSearch = crearBotonEstilizado("Search", colorBotones, colorTextoPrincipal, fuenteBotones);
-        //Agregado de info tecnica 
+        
         btnInfo = crearBotonEstilizado("Info Técnica", colorBotones, colorTextoPrincipal, fuenteBotones);
 
-        // Elementos de Colisiones
-        JLabel lblTituloColisiones = new JLabel("Collisions", SwingConstants.CENTER);
+        javax.swing.JLabel lblTituloColisiones = new javax.swing.JLabel("Collisions", javax.swing.SwingConstants.CENTER);
         lblTituloColisiones.setFont(fuenteTitulos);
         lblTituloColisiones.setForeground(colorTextoPrincipal);
         
-        lblNumColisiones = new JLabel("0", SwingConstants.CENTER);
+        lblNumColisiones = new javax.swing.JLabel("0", javax.swing.SwingConstants.CENTER);
         lblNumColisiones.setOpaque(true);
         lblNumColisiones.setBackground(colorPaneles);
         lblNumColisiones.setForeground(new java.awt.Color(255, 85, 85)); 
-        lblNumColisiones.setBorder(BorderFactory.createLineBorder(colorAcento, 2));
-        lblNumColisiones.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 36)); // Número enorme
+        lblNumColisiones.setBorder(javax.swing.BorderFactory.createLineBorder(colorAcento, 2));
+        lblNumColisiones.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 36)); 
         
-        // Área central (La "T")
-        JLabel lblT = new JLabel("Hash Table Structure (T)", SwingConstants.CENTER);
+        javax.swing.JLabel lblT = new javax.swing.JLabel("Hash Table Structure (T)", javax.swing.SwingConstants.CENTER);
         lblT.setFont(fuenteTitulos);
         lblT.setForeground(colorTextoPrincipal);
         
-        txtAreaTabla = new JTextArea();
+        txtAreaTabla = new javax.swing.JTextArea();
         txtAreaTabla.setEditable(false);
         txtAreaTabla.setBackground(new java.awt.Color(20, 20, 25)); 
         txtAreaTabla.setForeground(new java.awt.Color(152, 251, 152)); 
         txtAreaTabla.setFont(fuenteConsola);
         
-        JScrollPane scrollPane = new JScrollPane(txtAreaTabla);
-        scrollPane.setBorder(BorderFactory.createLineBorder(colorAcento));
+        javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(txtAreaTabla);
+        scrollPane.setBorder(javax.swing.BorderFactory.createLineBorder(colorAcento));
         
-        // Etiqueta de ruta abajo
-        lblRutaArchivo = new JLabel(" Ruta del archivo CSV aparecerá aquí...");
+        lblRutaArchivo = new javax.swing.JLabel(" Ruta del archivo CSV aparecerá aquí...");
         lblRutaArchivo.setOpaque(true);
         lblRutaArchivo.setBackground(colorPaneles);
         lblRutaArchivo.setForeground(colorTextoPrincipal);
         lblRutaArchivo.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14));
-        lblRutaArchivo.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, colorAcento));
+        lblRutaArchivo.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, colorAcento));
 
-        // Radio buttons 
-        radioDivision = new JRadioButton("División", true);
+        radioDivision = new javax.swing.JRadioButton("División", true);
         estilizarRadioButton(radioDivision, colorFondo, colorTextoPrincipal);
         
-        radioMultiplicacion = new JRadioButton("Multiplicación");
+        radioMultiplicacion = new javax.swing.JRadioButton("Multiplicación");
         estilizarRadioButton(radioMultiplicacion, colorFondo, colorTextoPrincipal);
         
-        ButtonGroup grupoFunciones = new ButtonGroup();
+        javax.swing.ButtonGroup grupoFunciones = new javax.swing.ButtonGroup();
         grupoFunciones.add(radioDivision);
         grupoFunciones.add(radioMultiplicacion);
 
-        // Configuracion de ventana
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        // Ventana
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(null); 
         getContentPane().setBackground(colorFondo);
         setResizable(false);
 
-        // (x, y, ancho, alto)        
+        // Elementos  
+        
         panelFile.setBounds(30, 30, 140, 190);
         panelOperations.setBounds(190, 30, 140, 190);
         getContentPane().add(panelFile);
         getContentPane().add(panelOperations);
 
-        // Botones panel File
         btnOpen.setBounds(15, 35, 110, 40);
         btnSave.setBounds(15, 85, 110, 40);
         btnClose.setBounds(15, 135, 110, 40);
@@ -119,7 +113,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         panelFile.add(btnSave);
         panelFile.add(btnClose);
 
-        // Botones panel Operations
         btnInsert.setBounds(15, 35, 110, 40);
         btnDelete.setBounds(15, 85, 110, 40);
         btnSearch.setBounds(15, 135, 110, 40);
@@ -127,33 +120,32 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         panelOperations.add(btnDelete);
         panelOperations.add(btnSearch);
 
-        // Radio Buttons 
-        radioDivision.setBounds(370, 70, 120, 30);
-        radioMultiplicacion.setBounds(370, 120, 150, 30);
+        // Centramos los Radio Buttons
+        radioDivision.setBounds(480, 80, 120, 30);
+        radioMultiplicacion.setBounds(480, 130, 150, 30);
         getContentPane().add(radioDivision);
         getContentPane().add(radioMultiplicacion);
 
-        // Panel de Colisiones y Botón Info
-        lblTituloColisiones.setBounds(560, 40, 120, 30);
-        lblNumColisiones.setBounds(560, 75, 120, 70);
-        btnInfo.setBounds(560, 160, 120, 40);
+        // Movemos las Colisiones a la derecha extrema
+        lblTituloColisiones.setBounds(880, 40, 120, 30);
+        lblNumColisiones.setBounds(880, 75, 120, 70);
+        btnInfo.setBounds(880, 160, 120, 40);
         getContentPane().add(lblTituloColisiones);
         getContentPane().add(lblNumColisiones);
         getContentPane().add(btnInfo);
 
-        // Panel Central (La Tabla "T")
-        lblT.setBounds(30, 240, 680, 30);
+        // Panel Central 
+        lblT.setBounds(30, 240, 1000, 30);
         getContentPane().add(lblT);
         
-        scrollPane.setBounds(30, 275, 680, 240); 
+        scrollPane.setBounds(30, 275, 1000, 350); 
         getContentPane().add(scrollPane);
 
         // Ruta abajo
-        lblRutaArchivo.setBounds(0, 530, 760, 35);
+        lblRutaArchivo.setBounds(0, 645, 1080, 35);
         getContentPane().add(lblRutaArchivo);
-
-        // Nuevo tamaño general de la ventana
-        setSize(760, 600);
+        
+        setSize(1080, 720);
     }
     
     // Método auxiliar actualizado para recibir la fuente

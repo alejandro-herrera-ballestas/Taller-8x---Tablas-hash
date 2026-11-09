@@ -61,15 +61,32 @@ public class Lista <T>{
 	 * adiciona un nodo entre nodos en order no decreciente
 	 * 
 	 */
-	
-        public boolean eliminar(int k){
-        
-            Nodo<T> temp = null;
-	    temp=primerNodo;
-            System.out.println("***"+temp.getDato());
-            primerNodo=temp.sig;
+	//Modificamos el metodo eliminar de la lista, creamos uno que cumpla las condiciones para el hash
+        public boolean eliminar(String placa) {
+        if (estaVacia()) {
+            return false; 
+        }
+
+        // Convertimos el dato a String para asegurarnos de que la comparación sea correcta
+        if (primerNodo.getDato().toString().equals(placa)) {
+            primerNodo = primerNodo.sig; // Desconecta la cabeza
+            tamaño--; // Actualizamos el tamaño de la lista
             return true;
         }
+
+        //El elemento está en medio o al final de la lista (colisión)
+        Nodo<T> temp = primerNodo;
+        while (temp.sig != null) {
+            if (temp.sig.getDato().toString().equals(placa)) {
+                temp.sig = temp.sig.sig; 
+                tamaño--; 
+                return true;
+            }
+            temp = temp.sig;
+        }
+
+        return false; 
+    }
         
         
 	public boolean adicionarEntreNodos(Nodo<T> Nodo){
