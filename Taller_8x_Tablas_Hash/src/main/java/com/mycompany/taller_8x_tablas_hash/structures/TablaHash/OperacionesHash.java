@@ -138,8 +138,8 @@ public class OperacionesHash implements FuncionHash {
     public Object buscarElemento(int k, String placa) {
         int posDiv = hashDivision(k, this.m);
         int posMult = hashMultiplicacion(k, this.m);
-        Object resultadoDiv = slotsDivision[posDiv].buscar(k);
-        Object resultadoMult = slotsMultiplicacion[posMult].buscar(k);
+        Object resultadoDiv = slotsDivision[posDiv].buscar(placa);
+        Object resultadoMult = slotsMultiplicacion[posMult].buscar(placa);
 
         if (resultadoDiv != null) {
             System.out.println("[División] Placa " + placa + " encontrada en el slot " + posDiv);
