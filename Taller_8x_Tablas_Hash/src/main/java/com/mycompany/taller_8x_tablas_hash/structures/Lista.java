@@ -162,6 +162,23 @@ public Object buscar(int k) {
     return null; // No se encontró en la lista
 	}
 
+	// sobrecarga del metodo buscar para buscar por placa
+	public Object buscar(String placa) {
+		if (estaVacia()) {
+			return null;
+		}
+		
+		Nodo actual = primerNodo; 
+		while (actual != null) {
+			// si el dato del nodo actual es igual a la placa, retornamos el dato
+			if (actual.getDato() != null && actual.getDato().equals(placa)) {
+				return actual.getDato(); 
+			}
+			actual = actual.sig;	// avanzamos al siguiente nodo
+		}
+		return null; // No se encontró en la lista
+	}
+	
 	// convertir a csv
 	public String aCSV() {
 		if (estaVacia()) {	
