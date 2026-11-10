@@ -117,6 +117,27 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         panelOperations.add(btnInsert);
         panelOperations.add(btnDelete);
         panelOperations.add(btnSearch);
+        //botones de lista y arboles
+        radioListas = new javax.swing.JRadioButton("Ver como Listas", true);
+        radioArboles = new javax.swing.JRadioButton("Ver como Árboles", false);
+
+        // Agruparlos para que solo se seleccione uno a la vez
+        javax.swing.ButtonGroup grupoVisual = new javax.swing.ButtonGroup();
+        grupoVisual.add(radioListas);
+        grupoVisual.add(radioArboles);
+
+        // Estilos para tu tema oscuro
+        radioListas.setOpaque(false);
+        radioListas.setForeground(java.awt.Color.WHITE);
+        radioArboles.setOpaque(false);
+        radioArboles.setForeground(java.awt.Color.WHITE);
+
+        // Posiciones (Ajusta las coordenadas X y Y según dónde quieras que se vean)
+        radioListas.setBounds(400, 220, 150, 30); 
+        radioArboles.setBounds(560, 220, 150, 30);
+
+        getContentPane().add(radioListas);
+        getContentPane().add(radioArboles);
 
         // Centramos los Radio Buttons
         radioDivision.setBounds(480, 80, 120, 30);
@@ -180,7 +201,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     public JLabel getLblNumColisiones() { return lblNumColisiones; }
     public JLabel getLblRutaArchivo() { return lblRutaArchivo; }
     public JTextArea getTxtAreaTabla() { return txtAreaTabla; }
-
+    //operaciones de binario
+    public javax.swing.JRadioButton getRadioListas() {return radioListas;}
+    public javax.swing.JRadioButton getRadioArboles() {return radioArboles; }
+    
+    private javax.swing.JRadioButton radioListas;
+    private javax.swing.JRadioButton radioArboles;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnInsert;
