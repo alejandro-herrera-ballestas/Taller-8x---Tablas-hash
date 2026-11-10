@@ -97,41 +97,65 @@ public class controllers implements ActionListener{
         }
         
        
-        //Search
-        else if (e.getSource() == vista.getBtnSearch()) {
+        // Search
+else if (e.getSource() == vista.getBtnSearch()) {
+    
+    // 1. Validamos si la tabla está vacía antes de buscar
+    if (vista.getTxtAreaTabla().getText().contains("Tabla Hash Vacía")) {
+        javax.swing.JOptionPane.showMessageDialog(vista, 
+            "No se puede realizar esta acción ya que la Tabla Hash se encuentra vacía.", 
+            "Acción denegada", 
+            javax.swing.JOptionPane.WARNING_MESSAGE);
+    } 
+    // 2. Si tiene datos, procedemos con la búsqueda según el modo activo
+    else {
+        String placaBuscar = javax.swing.JOptionPane.showInputDialog(vista, "Ingresa la placa exacta que deseas buscar:");
+        if (placaBuscar != null && !placaBuscar.trim().isEmpty()) {
+            String placaLimpia = placaBuscar.trim();
+            int k = com.mycompany.taller_8x_tablas_hash.models.leerCSVascii.calcularLlave(placaLimpia);
             
-            // 1. Validamos si la tabla está vacía antes de buscar
-            if (vista.getTxtAreaTabla().getText().contains("Tabla Hash Vacía")) {
-                javax.swing.JOptionPane.showMessageDialog(vista, 
-                    "No se puede realizar esta acción ya que la Tabla Hash se encuentra vacía.", 
-                    "Acción denegada", 
-                    javax.swing.JOptionPane.WARNING_MESSAGE);
-            } 
-            // 2. Si tiene datos, procedemos con la búsqueda normalmente
-            else {
-                String placaBuscar = javax.swing.JOptionPane.showInputDialog(vista, "Ingresa la placa exacta que deseas buscar:");
-                if (placaBuscar != null && !placaBuscar.trim().isEmpty()) {
-                    String placaLimpia = placaBuscar.trim();
-                    int k = com.mycompany.taller_8x_tablas_hash.models.leerCSVascii.calcularLlave(placaLimpia);
+            // Recibimos los slots donde se encuentra según Hash
+            int[] slotsEncontrados = modelo.buscarElemento(k, placaLimpia);
+            
+            // Evaluamos cuál Radio Button de estructura está seleccionado
+            boolean modoArbol = vista.getRadioArboles() != null && vista.getRadioArboles().isSelected();
+            boolean esDivision = vista.getRadioDivision().isSelected();
+
+            if (!modoArbol) {
+                // --- MODO LISTAS ENLAZADAS (HASH COMPLETO) ---
+                if (slotsEncontrados[0] != -1 || slotsEncontrados[1] != -1) {
+                    String mensaje = "Búsqueda Exitosa (Listas Enlazadas)\n\n"
+                                   + "Placa: " + placaLimpia + "\n"
+                                   + "Llave (k): " + k + "\n\n"
+                                   + "Ubicación en División: Slot " + (slotsEncontrados[0] != -1 ? slotsEncontrados[0] : "No está") + "\n"
+                                   + "Ubicación en Multiplicación: Slot " + (slotsEncontrados[1] != -1 ? slotsEncontrados[1] : "No está");
                     
-                    // Recibimos los slots donde se encontró
-                    int[] slotsEncontrados = modelo.buscarElemento(k, placaLimpia);
-                    
-                    if (slotsEncontrados[0] != -1 || slotsEncontrados[1] != -1) {
-                        String mensaje = "Búsqueda Exitosa\n\n"
-                                       + "Placa: " + placaLimpia + "\n"
-                                       + "Llave (k): " + k + "\n\n"
-                                       + "Ubicación en División: Slot " + (slotsEncontrados[0] != -1 ? slotsEncontrados[0] : "No está") + "\n"
-                                       + "Ubicación en Multiplicación: Slot " + (slotsEncontrados[1] != -1 ? slotsEncontrados[1] : "No está");
-                        
-                        javax.swing.JOptionPane.showMessageDialog(vista, mensaje, "Resultado de Búsqueda", javax.swing.JOptionPane.INFORMATION_MESSAGE);
-                    } else {
-                        javax.swing.JOptionPane.showMessageDialog(vista, "La placa " + placaLimpia + " NO existe en la memoria.", "No encontrada", javax.swing.JOptionPane.WARNING_MESSAGE);
+                    javax.swing.JOptionPane.showMessageDialog(vista, mensaje, "Resultado de Búsqueda", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    javax.swing.JOptionPane.showMessageDialog(vista, "La placa " + placaLimpia + " NO existe en la memoria.", "No encontrada", javax.swing.JOptionPane.WARNING_MESSAGE);
+                }
+            } else {
+                // --- MODO ÁRBOLES BINARIOS ---
+                // Seleccionamos el slot dependiendo de si la vista actual usa División o Multiplicación
+                int slotActual = esDivision ? slotsEncontrados[0] : slotsEncontrados[1];
+                String metodoNombre = esDivision ? "División" : "Multiplicación";
+
+                if (slotActual != -1) {
+                    String mensajeArbol = "Búsqueda Exitosa en Árbol Binario\n\n"
+                                        + "Placa: " + placaLimpia + "\n"
+                                        + "Llave (k): " + k + "\n"
+                                        + "Método activo: " + metodoNombre + "\n"
+                                        + "Encontrada en el Árbol del Slot: " + slotActual;
+
+                    javax.swing.JOptionPane.showMessageDialog(vista, mensajeArbol, "Resultado de Búsqueda en Árbol", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    javax.swing.JOptionPane.showMessageDialog(vista, "La placa " + placaLimpia + " NO existe en el árbol del método " + metodoNombre + ".", "No encontrada", javax.swing.JOptionPane.WARNING_MESSAGE);
                     }
                 }
             }
         }
-    }        
+    }
+}      
     private void abrirArchivoCSV() {
         javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
         fileChooser.setDialogTitle("Seleccionar archivo CSV");
