@@ -123,25 +123,29 @@ public class OperacionesHash implements FuncionHash {
         contadorColisionesMultiplicacion = Math.max(0, contadorColisionesMultiplicacion - 1); // Decrementa el contador de colisiones
     }
 
-    public Object buscarElemento(int k, String placa) {
+    public int[] buscarElemento(int k, String placa) {
         int posDiv = hashDivision(k, this.m);
         int posMult = hashMultiplicacion(k, this.m);
+        
         Object resultadoDiv = slotsDivision[posDiv].buscar(placa);
         Object resultadoMult = slotsMultiplicacion[posMult].buscar(placa);
+        
+        int slotEncontradoDiv = (resultadoDiv != null) ? posDiv : -1;
+        int slotEncontradoMult = (resultadoMult != null) ? posMult : -1;
 
-        if (resultadoDiv != null) {
-            System.out.println("[División] Placa " + placa + " encontrada en el slot " + posDiv);
+        if (slotEncontradoDiv != -1) {
+            System.out.println("[Division] Placa " + placa + " encontrada en el slot " + posDiv);
         } else {
-            System.out.println("[División] Placa " + placa + " NO encontrada.");
+            System.out.println("[Division] Placa " + placa + " NO encontrada.");
         }
 
-        if (resultadoMult != null) {
-            System.out.println("[Multiplicación] Placa " + placa + " encontrada en el slot " + posMult);
+        if (slotEncontradoMult != -1) {
+            System.out.println("[Multiplicacion] Placa " + placa + " encontrada en el slot " + posMult);
         } else {
-            System.out.println("[Multiplicación] Placa " + placa + " NO encontrada.");
+            System.out.println("[Multiplicacion] Placa " + placa + " NO encontrada.");
         }
 
-        return (resultadoDiv != null) ? resultadoDiv : resultadoMult;
+        return new int[]{slotEncontradoDiv, slotEncontradoMult};
     }
 
     // guardar en csv, metodo generico para exportar cualquiera

@@ -18,7 +18,7 @@ public class OperacionesBinaryTree {
         long slot = tabla.hashDivision(k, 256);
         
         tree.adicionar(slot, tree.getRaiz() , 1);
-        
+        tabla.insertarElemento(k, placa);
         
         return true;
     }
@@ -33,7 +33,7 @@ public class OperacionesBinaryTree {
         long slot = tabla.hashMultiplicacion(k, 256);
         
         tree.adicionar(slot, tree.getRaiz() , 1);
-        
+        tabla.insertarElemento(k, placa);
         
         return true;
     }
@@ -99,6 +99,7 @@ public class OperacionesBinaryTree {
         }
         
         if( tree.eliminar(slot, tree.getRaiz()) ){
+            tabla.borrarElemento(k, placa);
             System.out.println("Registro con placa [" + placa + "] encontrado y eliminado");
             return true;
         } 
@@ -116,6 +117,7 @@ public class OperacionesBinaryTree {
         }
         
         if( tree.eliminar(slot, tree.getRaiz()) ){
+            tabla.borrarElemento(k, placa);
             System.out.println("Registro con placa [" + placa + "] encontrado y eliminado");
             return true;
         } 

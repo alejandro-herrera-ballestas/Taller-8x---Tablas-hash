@@ -25,7 +25,6 @@ public class controllers implements ActionListener{
         this.vista.getBtnSearch().addActionListener(this);
         this.vista.getBtnSave().addActionListener(this);
         this.vista.getBtnClose().addActionListener(this);
-        this.vista.getBtnInfo().addActionListener(this); 
         //para pasar de division a multiplicacion
         this.vista.getRadioDivision().addActionListener(e -> actualizarVistaTabla());
         this.vista.getRadioMultiplicacion().addActionListener(e -> actualizarVistaTabla());
@@ -72,30 +71,61 @@ public class controllers implements ActionListener{
         
         //Delete
         else if (e.getSource() == vista.getBtnDelete()) {
-            String placaBorrar = javax.swing.JOptionPane.showInputDialog(vista, "Ingresa la placa exacta que deseas eliminar:");
-            if (placaBorrar != null && !placaBorrar.trim().isEmpty()) {
-                int k = com.mycompany.taller_8x_tablas_hash.models.leerCSVascii.calcularLlave(placaBorrar.trim());
-                modelo.borrarElemento(k, placaBorrar.trim());
-                actualizarVistaTabla(); // Refresca la T visual
-                javax.swing.JOptionPane.showMessageDialog(vista, "Comando de eliminación ejecutado.\nRevisa la consola para ver detalles del Slot.");
-            }
-        }
-
-        //Search
-        else if (e.getSource() == vista.getBtnSearch()) {
-            String placaBuscar = javax.swing.JOptionPane.showInputDialog(vista, "Ingresa la placa exacta que deseas buscar:");
-            if (placaBuscar != null && !placaBuscar.trim().isEmpty()) {
-                int k = com.mycompany.taller_8x_tablas_hash.models.leerCSVascii.calcularLlave(placaBuscar.trim());
-                Object resultado = modelo.buscarElemento(k, placaBuscar.trim());
-                if (resultado != null) {
-                    javax.swing.JOptionPane.showMessageDialog(vista, "Placa encontrada: " + resultado.toString() + "en la posicion :" + k);
-                } else {
-                    javax.swing.JOptionPane.showMessageDialog(vista, "Placa NO encontrada.");
+            
+            //Validamos si la tabla está vacía antes de hacer cualquier cosa
+            if (vista.getTxtAreaTabla().getText().contains("Tabla Hash Vacía")) {
+                javax.swing.JOptionPane.showMessageDialog(vista, 
+                    "No se puede realizar esta acción ya que la Tabla Hash se encuentra vacía.", 
+                    "Acción denegada", 
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+            } 
+            else {
+                String placaBorrar = javax.swing.JOptionPane.showInputDialog(vista, "Ingresa la placa exacta que deseas eliminar:");
+                if (placaBorrar != null && !placaBorrar.trim().isEmpty()) {
+                    int k = com.mycompany.taller_8x_tablas_hash.models.leerCSVascii.calcularLlave(placaBorrar.trim());
+                    modelo.borrarElemento(k, placaBorrar.trim());
+                    actualizarVistaTabla(); // Refresca la T visual
+                    javax.swing.JOptionPane.showMessageDialog(vista, "Comando de eliminación ejecutado.\nRevisa la consola para ver detalles del Slot.");
                 }
             }
         }
-    }
-    
+        
+       
+        //Search
+        else if (e.getSource() == vista.getBtnSearch()) {
+            
+            // 1. Validamos si la tabla está vacía antes de buscar
+            if (vista.getTxtAreaTabla().getText().contains("Tabla Hash Vacía")) {
+                javax.swing.JOptionPane.showMessageDialog(vista, 
+                    "No se puede realizar esta acción ya que la Tabla Hash se encuentra vacía.", 
+                    "Acción denegada", 
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+            } 
+            // 2. Si tiene datos, procedemos con la búsqueda normalmente
+            else {
+                String placaBuscar = javax.swing.JOptionPane.showInputDialog(vista, "Ingresa la placa exacta que deseas buscar:");
+                if (placaBuscar != null && !placaBuscar.trim().isEmpty()) {
+                    String placaLimpia = placaBuscar.trim();
+                    int k = com.mycompany.taller_8x_tablas_hash.models.leerCSVascii.calcularLlave(placaLimpia);
+                    
+                    // Recibimos los slots donde se encontró
+                    int[] slotsEncontrados = modelo.buscarElemento(k, placaLimpia);
+                    
+                    if (slotsEncontrados[0] != -1 || slotsEncontrados[1] != -1) {
+                        String mensaje = "Búsqueda Exitosa\n\n"
+                                       + "Placa: " + placaLimpia + "\n"
+                                       + "Llave (k): " + k + "\n\n"
+                                       + "Ubicación en División: Slot " + (slotsEncontrados[0] != -1 ? slotsEncontrados[0] : "No está") + "\n"
+                                       + "Ubicación en Multiplicación: Slot " + (slotsEncontrados[1] != -1 ? slotsEncontrados[1] : "No está");
+                        
+                        javax.swing.JOptionPane.showMessageDialog(vista, mensaje, "Resultado de Búsqueda", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        javax.swing.JOptionPane.showMessageDialog(vista, "La placa " + placaLimpia + " NO existe en la memoria.", "No encontrada", javax.swing.JOptionPane.WARNING_MESSAGE);
+                    }
+                }
+            }
+        }
+    }        
     private void abrirArchivoCSV() {
         javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
         fileChooser.setDialogTitle("Seleccionar archivo CSV");
@@ -121,7 +151,7 @@ public class controllers implements ActionListener{
                         // (Usando el Radix-2 que actualizaste)
                         int k = com.mycompany.taller_8x_tablas_hash.models.leerCSVascii.calcularLlave(plate);
                         
-                        // Insertamos pasando LA LLAVE y LA PLACA
+                        // Insertamos pasando la llave y la placa
                         modelo.insertarElemento(k, plate); 
                     }
                     
@@ -176,19 +206,4 @@ public class controllers implements ActionListener{
         
         vista.getTxtAreaTabla().setText(textoVisual.toString());
     }           
-    
-       //Funcion de ficha tecnica, es un simple agregado del problema
-        private void mostrarInfoTecnica() {
-        String mensaje = "<html><body style='width: 250px; font-family: Segoe UI;'>"
-                       + "<h2 style='color: #8A2BE2;'>Tabla Hash - Specs</h2>"
-                       + "<p><b>Arquitectura:</b> Modelo-Vista-Controlador (MVC)</p>"
-                       + "<p><b>Algoritmo Key:</b> Método de Horner (Radix-2) para conversión de cadenas ASCII.</p>"
-                       + "<p><b>Resolución de Colisiones:</b> Chaining mediante Listas Simplemente Enlazadas.</p>"
-                       + "<p><b>Capacidad (m):</b> 256 Slots predefinidos.</p>"
-                       + "<hr>"
-                       + "<p style='font-size: 10px; color: gray;'>Proyecto Taller 8x</p>"
-                       + "</body></html>";
-                       
-        JOptionPane.showMessageDialog(vista, mensaje, "Información Técnica", JOptionPane.INFORMATION_MESSAGE);
-    }
 }

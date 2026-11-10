@@ -50,8 +50,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         btnDelete = crearBotonEstilizado("Delete", colorBotones, colorTextoPrincipal, fuenteBotones);
         btnSearch = crearBotonEstilizado("Search", colorBotones, colorTextoPrincipal, fuenteBotones);
         
-        btnInfo = crearBotonEstilizado("Info Técnica", colorBotones, colorTextoPrincipal, fuenteBotones);
-
         javax.swing.JLabel lblTituloColisiones = new javax.swing.JLabel("Collisions", javax.swing.SwingConstants.CENTER);
         lblTituloColisiones.setFont(fuenteTitulos);
         lblTituloColisiones.setForeground(colorTextoPrincipal);
@@ -129,10 +127,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         // Movemos las Colisiones a la derecha extrema
         lblTituloColisiones.setBounds(880, 40, 120, 30);
         lblNumColisiones.setBounds(880, 75, 120, 70);
-        btnInfo.setBounds(880, 160, 120, 40);
         getContentPane().add(lblTituloColisiones);
         getContentPane().add(lblNumColisiones);
-        getContentPane().add(btnInfo);
 
         // Panel Central 
         lblT.setBounds(30, 240, 1000, 30);
@@ -177,7 +173,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     public JButton getBtnInsert() { return btnInsert; }
     public JButton getBtnDelete() { return btnDelete; }
     public JButton getBtnSearch() { return btnSearch; }
-    public JButton getBtnInfo() { return btnInfo; }
     // Getters de Hash
     public JRadioButton getRadioDivision() { return radioDivision; }
     public JRadioButton getRadioMultiplicacion() { return radioMultiplicacion; }
@@ -192,7 +187,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton btnOpen;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSearch;
-    private javax.swing.JButton btnInfo;
     private javax.swing.JLabel lblNumColisiones;
     private javax.swing.JLabel lblRutaArchivo;
     private javax.swing.JRadioButton radioDivision;
