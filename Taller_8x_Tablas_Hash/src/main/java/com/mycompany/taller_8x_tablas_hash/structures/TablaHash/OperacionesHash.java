@@ -83,6 +83,8 @@ public class OperacionesHash implements FuncionHash {
         } 
         slotsDivision[posDiv].adicionarFinal(new Nodo<>(placa));
 
+        System.out.println("[División] Elemento insertado: " + placa + " en el slot: " + posDiv);
+
         // mul
         if (verificarColisionMultiplicacion(posMult)) {
             contadorColisionesMultiplicacion++; 
