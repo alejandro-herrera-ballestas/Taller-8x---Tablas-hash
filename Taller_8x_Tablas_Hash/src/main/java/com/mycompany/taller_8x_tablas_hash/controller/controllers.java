@@ -28,6 +28,9 @@ public class controllers implements ActionListener{
         //para pasar de division a multiplicacion
         this.vista.getRadioDivision().addActionListener(e -> actualizarVistaTabla());
         this.vista.getRadioMultiplicacion().addActionListener(e -> actualizarVistaTabla());
+        //Para pasar de lista a arbol
+        this.vista.getRadioListas().addActionListener(e -> actualizarVistaTabla());
+        this.vista.getRadioArboles().addActionListener(e -> actualizarVistaTabla());
     }
     
     @Override
@@ -171,6 +174,7 @@ public class controllers implements ActionListener{
         com.mycompany.taller_8x_tablas_hash.structures.Lista[] slotsSeleccionados;
         int colisionesTotales = 0;
         
+        //Que método matemático está activo?? (División o Multiplicación?)
         if (vista.getRadioDivision().isSelected()) {
             slotsSeleccionados = modelo.getSlotsDivision();
             colisionesTotales = modelo.getContadorColisionesDivision();
@@ -179,24 +183,46 @@ public class controllers implements ActionListener{
             colisionesTotales = modelo.getContadorColisionesMultiplicacion();
         }
         
-        // Actualizar contador 
         vista.getLblNumColisiones().setText(String.valueOf(colisionesTotales));
         
-        // Dibujar la tabla
+        //visualización elegido por el usuario
+        boolean modoArbol = vista.getRadioArboles() != null && vista.getRadioArboles().isSelected();
+        
         for (int i = 0; i < slotsSeleccionados.length; i++) {
             com.mycompany.taller_8x_tablas_hash.structures.Lista listaActual = slotsSeleccionados[i];
             
             if (!listaActual.estaVacia()) {
                 textoVisual.append(String.format("[ Slot %3d ]", i));
                 
-                String datosCSV = listaActual.aCSV(); // Devuelve algo como ";05-9165610;05-1234567"
-                String[] nodos = datosCSV.split(";"); // Lo separamos en un arreglo
-                
-                // Recorremos el arreglo (empezando en 1 porque el índice 0 queda vacío por el primer ';')
-                for (int j = 1; j < nodos.length; j++) {
-                    textoVisual.append(" -> [ ").append(nodos[j]).append(" ]");
+                if (!modoArbol) {
+                    // Lista enlazada
+                    String datosCSV = listaActual.aCSV(); 
+                    String[] nodos = datosCSV.split(";"); 
+                    for (int j = 1; j < nodos.length; j++) {
+                        textoVisual.append(" -> [ ").append(nodos[j]).append(" ]");
+                    }
+                    textoVisual.append("\n");
+                } else {
+                    // Arbol binario
+                    textoVisual.append("\n");
+                    
+                    //árbol temporal para visualización
+                    com.mycompany.taller_8x_tablas_hash.structures.BinaryTree miniArbol = new com.mycompany.taller_8x_tablas_hash.structures.BinaryTree();
+                    
+                    String datosCSV = listaActual.aCSV(); 
+                    String[] nodos = datosCSV.split(";"); 
+                    
+                    for (int j = 1; j < nodos.length; j++) {
+                        String placa = nodos[j];
+                        // Pasamos la placa a llave 'k' para el nodo del árbol
+                        long llaveK = com.mycompany.taller_8x_tablas_hash.models.leerCSVascii.calcularLlave(placa);
+                        miniArbol.adicionar(llaveK, miniArbol.getRaiz(), 1);
+                    }
+                    
+                    
+                    textoVisual.append(miniArbol.aStringVisual());
+                    textoVisual.append("   -----------------------------------\n");
                 }
-                textoVisual.append("\n"); // Salto de línea
             }
         }
         

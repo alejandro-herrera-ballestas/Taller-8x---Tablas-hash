@@ -167,6 +167,45 @@ public class BinaryTree {
             return null;
 	}
         
+            // Metodo para imprimir el árbol de forma en la interfaz gráfica
+         public String aStringVisual() {
+           if (raiz == null) return "";
+           StringBuilder sb = new StringBuilder();
+        // Imprimimos la raíz de forma especial y limpia
+           sb.append("      (R) ── [ Llave k: ").append(raiz.getDato()).append(" ]\n");
+        
+            if (raiz.izquierdo != null || raiz.derecho != null) {
+            String prefijoHijos = "             "; // Espaciado exacto para alinear bajo la raíz
+               if (raiz.izquierdo != null) {
+                boolean esUltimo = (raiz.derecho == null);
+                construirStringArbol(raiz.izquierdo, sb, prefijoHijos, esUltimo, "(I)");
+              }
+              if (raiz.derecho != null) {
+                construirStringArbol(raiz.derecho, sb, prefijoHijos, true, "(D)");
+              }
+           }
+        return sb.toString();
+      }
+
+         private void construirStringArbol(Node nodo, StringBuilder sb, String prefijo, boolean esUltimo, String tipoNodo) {
+            if (nodo != null) {
+            sb.append(prefijo);
+            sb.append(esUltimo ? "└── " : "├── ");
+            sb.append(tipoNodo).append(" ── [ Llave k: ").append(nodo.getDato()).append(" ]\n");
+
+            String nuevoPrefijo = prefijo + (esUltimo ? "    " : "│   ");
+
+            if (nodo.izquierdo != null || nodo.derecho != null) {
+                  if (nodo.izquierdo != null) {
+                    boolean ultimoIzq = (nodo.derecho == null);
+                    construirStringArbol(nodo.izquierdo, sb, nuevoPrefijo, ultimoIzq, "(I)");
+                  }
+                  if (nodo.derecho != null) {
+                    construirStringArbol(nodo.derecho, sb, nuevoPrefijo, true, "(D)");
+                  }
+              }
+           }
+        }  
         
 	public int getNumeroNodos(){
 		return this.nodos;
