@@ -68,7 +68,10 @@ public class controllers implements ActionListener{
                 int k = com.mycompany.taller_8x_tablas_hash.models.leerCSVascii.calcularLlave(nuevaPlaca.trim());
                 modelo.insertarElemento(k, nuevaPlaca.trim());
                 actualizarVistaTabla(); // Refresca la T visual
-                javax.swing.JOptionPane.showMessageDialog(vista, "Placa insertada correctamente.");
+                javax.swing.JOptionPane.showMessageDialog(vista, "Placa insertada correctamente." + 
+                    " En el slot " + 
+                    (vista.getRadioDivision().isSelected() ? modelo.buscarElemento(k, nuevaPlaca.trim())[0] : modelo.buscarElemento(k, nuevaPlaca.trim())[1])
+                );
             }
         }
         
