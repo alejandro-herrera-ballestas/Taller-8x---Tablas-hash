@@ -85,74 +85,33 @@ public class BinaryTree {
             return null;
         }
         
-        public boolean eliminar(long k, Node raiz){
-            if (raiz == null)
-                return false;
+    private boolean eliminado;
 
+    public boolean eliminar(long k, Node raiz){
+        eliminado = false;
+        this.raiz = eliminarNodo(k, this.raiz);
+        return eliminado;
+    }
 
-            if (k == raiz.getDato()) {
-                System.out.println("Encontrado");
-                
-                Node temporal = null;
-                // Sin hijos o con un solo hijo
-                if(raiz.izquierdo == null ){
-                    
-                    // Debugs
-                    /*System.out.println("Izquierdo");
-                    System.out.println("Raiz:" + raiz.getDato());
-                    System.out.println("Raiz Derecho1: " + raiz.derecho.getDato());
-                    System.out.println("Raiz Derecho2: " + raiz.derecho.izquierdo.getDato());
-                    System.out.println("Raiz Izquierdo: " + raiz.izquierdo.getDato());
-                    */
-                    
-                    temporal = raiz.derecho;
-                    
-                    System.out.println("Valor Temporal: " + temporal);
-                    
-                    raiz.setDato(temporal.getDato());
-                    
-                    raiz.derecho = null;
-                 
-                    raiz = temporal;
-                    
-                    
-                    
-                }else if(raiz.derecho == null){
-                    // Debugs
-                    /*
-                    System.out.println("Derecho");
-                    System.out.println("Raiz:" + raiz.getDato());
-                    System.out.println("Raiz Izquierdo: " + raiz.izquierdo.getDato());
-                    */
-                    temporal = raiz.izquierdo;
-                    
-                    raiz.setDato(temporal.getDato());
-                  
-                    raiz.izquierdo = null;
-                    raiz = temporal;
-                    
-                }
-                // Con dos hijos
-                else{
-                    /*System.out.println("Hijos");
-                    */
-                    
-                    temporal = inorderEliminar(raiz.derecho);
-                    
-                    raiz.setDato(temporal.getDato());
-
-                    raiz = temporal;
-                }
-                
-                return true;
-            } else if (k < raiz.getDato()) {
-                return (boolean) eliminar(k, raiz.izquierdo);
-            } else if (k > raiz.getDato()) {
-                return (boolean) eliminar(k, raiz.derecho);
-            }
-
-            return false;
+    private Node eliminarNodo(long k, Node r){
+        if (r == null) return null;
+        if (k < r.getDato()) {
+            r.izquierdo = eliminarNodo(k, r.izquierdo);
+        } else if (k > r.getDato()) {
+            r.derecho = eliminarNodo(k, r.derecho);
+        } else {
+            eliminado = true;
+            nodos--;
+            if (r.izquierdo == null) return r.derecho;
+            if (r.derecho == null)   return r.izquierdo;
+            Node s = r.derecho;
+            while (s.izquierdo != null) s = s.izquierdo;
+            r.setDato(s.getDato());
+            r.derecho = eliminarNodo(s.getDato(), r.derecho);
+            nodos++;
         }
+        return r;
+    }
         
         public Node inorderEliminar(Node raiz){
                 Node temp = null;
