@@ -1,115 +1,181 @@
 package com.mycompany.taller_8x_tablas_hash.models;
 
 import com.mycompany.taller_8x_tablas_hash.structures.BinaryTree;
+import com.mycompany.taller_8x_tablas_hash.structures.Lista;
 import com.mycompany.taller_8x_tablas_hash.structures.Nodo;
 import com.mycompany.taller_8x_tablas_hash.structures.TablaHash.OperacionesHash;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.Arrays;
+import java.util.Random;
 
-/**
- * Compara tabla hash con LISTAS vs tabla hash con ARBOLES BINARIOS (m = 256),
- * midiendo insertar y borrar con las 10 primeras placas del archivo CSV.
- *
- * Se mide solo la estructura del slot (sin los println ni los contadores de
- * colisiones de OperacionesHash), porque imprimir cuesta mucho mas que insertar
- * y falsearia la comparacion.
- */
+
 public class ComparadorRendimiento {
 
-    private static final int M = 256;
-    private static final int CUANTAS = 10;
-    private static final int CALENTAMIENTO = 20000;
-    private static final int REPETICIONES = 20000;
+    private static final int M = 256;           // tamano de la tabla (lo pide el taller)
+    private static final int CALENTAMIENTO = 500;
+    private static final int RONDAS = 1500;
+    private static final int PERMUTACIONES = 16; // ordenes aleatorios precalculados
 
-    public static void comparar(String rutaCSV) {
-        String[] todas = leerPlacas(rutaCSV);
-        if (todas == null || todas.length == 0) return;
-        int n = Math.min(CUANTAS, todas.length);
+    /** Ejecuta la comparacion, la imprime por consola y devuelve el mismo reporte como texto. */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static String comparar(String rutaCSV) {
+        String[] placas = leerPlacas(rutaCSV);
+        if (placas == null || placas.length == 0) return "";
+        int n = placas.length;
 
-        // Tabla con listas (se usa OperacionesHash por sus funciones hash y sus slots de Lista)
-        OperacionesHash h = new OperacionesHash(M);
-        // Tabla con arboles: un BinaryTree por slot, una por division y otra por multiplicacion
-        BinaryTree[] arbDiv = new BinaryTree[M];
-        BinaryTree[] arbMul = new BinaryTree[M];
-        for (int i = 0; i < M; i++) {
-            arbDiv[i] = new BinaryTree();
-            arbMul[i] = new BinaryTree();
-        }
-
-        // Cargar TODOS los registros en ambas tablas (estado real de la tabla)
-        for (String p : todas) {
-            int k = leerCSVascii.calcularLlave(p);
-            insertarLista(h, k, p);
-            insertarArbol(h, arbDiv, arbMul, k);
-        }
-
-        String[] placas = new String[n];
-        int[] llaves = new int[n];
+        OperacionesHash h = new OperacionesHash(M); // solo para sus funciones hash
+        int[] llave = new int[n];
+        int[] slotDiv = new int[n];
+        int[] slotMul = new int[n];
         for (int i = 0; i < n; i++) {
-            placas[i] = todas[i];
-            llaves[i] = leerCSVascii.calcularLlave(placas[i]);
+            llave[i] = leerCSVascii.calcularLlave(placas[i]);
+            slotDiv[i] = h.hashDivision(llave[i], M);
+            slotMul[i] = h.hashMultiplicacion(llave[i], M);
         }
 
-        long overhead = calibrarNanoTime();
+        // Estructuras (listas propias, independientes de la tabla de la interfaz)
+        Lista[] listaDiv = new Lista[M], listaMul = new Lista[M];
+        BinaryTree[] arbDiv = new BinaryTree[M], arbMul = new BinaryTree[M];
+        for (int s = 0; s < M; s++) {
+            listaDiv[s] = new Lista();
+            listaMul[s] = new Lista();
+            arbDiv[s] = new BinaryTree();
+            arbMul[s] = new BinaryTree();
+        }
+        BinaryTree arbolUnico = new BinaryTree();
 
-        // Calentamiento (no se registra)
-        for (int r = 0; r < CALENTAMIENTO; r++) {
-            for (int i = 0; i < n; i++) {
-                borrarLista(h, llaves[i], placas[i]);
-                insertarLista(h, llaves[i], placas[i]);
-                borrarArbol(h, arbDiv, arbMul, llaves[i]);
-                insertarArbol(h, arbDiv, arbMul, llaves[i]);
+        // Estado inicial: TODOS los registros cargados en todas las estructuras
+        for (int i = 0; i < n; i++) {
+            listaDiv[slotDiv[i]].adicionarFinal(new Nodo<>(placas[i]));
+            listaMul[slotMul[i]].adicionarFinal(new Nodo<>(placas[i]));
+            arbDiv[slotDiv[i]].adicionar(llave[i], arbDiv[slotDiv[i]].getRaiz(), 1);
+            arbMul[slotMul[i]].adicionar(llave[i], arbMul[slotMul[i]].getRaiz(), 1);
+            arbolUnico.adicionar(llave[i], arbolUnico.getRaiz(), 1);
+        }
+
+        // Ordenes aleatorios precalculados (fuera del cronometro)
+        int[][] orden = new int[PERMUTACIONES][n];
+        Random rnd = new Random(12345);
+        for (int p = 0; p < PERMUTACIONES; p++) {
+            for (int i = 0; i < n; i++) orden[p][i] = i;
+            for (int i = n - 1; i > 0; i--) {
+                int j = rnd.nextInt(i + 1);
+                int t = orden[p][i]; orden[p][i] = orden[p][j]; orden[p][j] = t;
             }
         }
 
-        // se guarda cada muestra para usar la MEDIANA
-        long[][] borL = new long[n][REPETICIONES], insL = new long[n][REPETICIONES];
-        long[][] borA = new long[n][REPETICIONES], insA = new long[n][REPETICIONES];
-        for (int r = 0; r < REPETICIONES; r++) {
-            for (int i = 0; i < n; i++) {
-                long t0 = System.nanoTime();
-                borrarLista(h, llaves[i], placas[i]);
-                long t1 = System.nanoTime();
-                insertarLista(h, llaves[i], placas[i]);
-                long t2 = System.nanoTime();
-                borrarArbol(h, arbDiv, arbMul, llaves[i]);
-                long t3 = System.nanoTime();
-                insertarArbol(h, arbDiv, arbMul, llaves[i]);
-                long t4 = System.nanoTime();
+        final int E = 5; // estructuras: 0 listaDiv, 1 listaMul, 2 arbDiv, 3 arbMul, 4 arbolUnico
+        long[][] tBorrar = new long[E][RONDAS];
+        long[][] tInsertar = new long[E][RONDAS];
 
-                borL[i][r] = Math.max(0, t1 - t0 - overhead);
-                insL[i][r] = Math.max(0, t2 - t1 - overhead);
-                borA[i][r] = Math.max(0, t3 - t2 - overhead);
-                insA[i][r] = Math.max(0, t4 - t3 - overhead);
+        for (int r = -CALENTAMIENTO; r < RONDAS; r++) {
+            int[] o = orden[Math.floorMod(r, PERMUTACIONES)];
+            long t0, t1;
+
+            // ---- 0: lista + division
+            t0 = System.nanoTime();
+            for (int j = 0; j < n; j++) { int i = o[j]; listaDiv[slotDiv[i]].eliminar(placas[i]); }
+            t1 = System.nanoTime();
+            long bl0 = t1 - t0;
+            t0 = System.nanoTime();
+            for (int j = 0; j < n; j++) { int i = o[j]; listaDiv[slotDiv[i]].adicionarFinal(new Nodo<>(placas[i])); }
+            t1 = System.nanoTime();
+            long il0 = t1 - t0;
+
+            // ---- 1: lista + multiplicacion
+            t0 = System.nanoTime();
+            for (int j = 0; j < n; j++) { int i = o[j]; listaMul[slotMul[i]].eliminar(placas[i]); }
+            t1 = System.nanoTime();
+            long bl1 = t1 - t0;
+            t0 = System.nanoTime();
+            for (int j = 0; j < n; j++) { int i = o[j]; listaMul[slotMul[i]].adicionarFinal(new Nodo<>(placas[i])); }
+            t1 = System.nanoTime();
+            long il1 = t1 - t0;
+
+            // ---- 2: arbol por slot + division
+            t0 = System.nanoTime();
+            for (int j = 0; j < n; j++) { int i = o[j]; BinaryTree a = arbDiv[slotDiv[i]]; a.eliminar(llave[i], a.getRaiz()); }
+            t1 = System.nanoTime();
+            long ba2 = t1 - t0;
+            t0 = System.nanoTime();
+            for (int j = 0; j < n; j++) { int i = o[j]; BinaryTree a = arbDiv[slotDiv[i]]; a.adicionar(llave[i], a.getRaiz(), 1); }
+            t1 = System.nanoTime();
+            long ia2 = t1 - t0;
+
+            // ---- 3: arbol por slot + multiplicacion
+            t0 = System.nanoTime();
+            for (int j = 0; j < n; j++) { int i = o[j]; BinaryTree a = arbMul[slotMul[i]]; a.eliminar(llave[i], a.getRaiz()); }
+            t1 = System.nanoTime();
+            long ba3 = t1 - t0;
+            t0 = System.nanoTime();
+            for (int j = 0; j < n; j++) { int i = o[j]; BinaryTree a = arbMul[slotMul[i]]; a.adicionar(llave[i], a.getRaiz(), 1); }
+            t1 = System.nanoTime();
+            long ia3 = t1 - t0;
+
+            // ---- 4: arbol binario unico (sin hash)
+            t0 = System.nanoTime();
+            for (int j = 0; j < n; j++) { int i = o[j]; arbolUnico.eliminar(llave[i], arbolUnico.getRaiz()); }
+            t1 = System.nanoTime();
+            long ba4 = t1 - t0;
+            t0 = System.nanoTime();
+            for (int j = 0; j < n; j++) { int i = o[j]; arbolUnico.adicionar(llave[i], arbolUnico.getRaiz(), 1); }
+            t1 = System.nanoTime();
+            long ia4 = t1 - t0;
+
+            if (r >= 0) {
+                tBorrar[0][r] = bl0; tInsertar[0][r] = il0;
+                tBorrar[1][r] = bl1; tInsertar[1][r] = il1;
+                tBorrar[2][r] = ba2; tInsertar[2][r] = ia2;
+                tBorrar[3][r] = ba3; tInsertar[3][r] = ia3;
+                tBorrar[4][r] = ba4; tInsertar[4][r] = ia4;
             }
         }
 
-  
-        System.out.println();
-        System.out.println("=================== COMPARACION: HASH CON LISTAS vs HASH CON ARBOLES ===================");
-        System.out.println("m = " + M + " | registros cargados = " + todas.length
-                + " | placas medidas = " + n + " | ciclos por placa = " + REPETICIONES);
-        System.out.println("Tiempo = mediana en ns | Mejora (%) = (T_lista - T_arbol) / T_lista * 100 (positivo = el arbol es mas rapido)");
-        System.out.println("---------------------------------------------------------------------------------------");
-        System.out.printf("%-12s | %-26s | %-26s%n", "Placa", "INSERTAR (ns) lista/arbol/%", "BORRAR (ns) lista/arbol/%");
-        System.out.println("---------------------------------------------------------------------------------------");
-
-        double sIL = 0, sIA = 0, sBL = 0, sBA = 0;
-        for (int i = 0; i < n; i++) {
-            double il = mediana(insL[i]), ia = mediana(insA[i]);
-            double bl = mediana(borL[i]), ba = mediana(borA[i]);
-            System.out.printf("%-12s | %7.1f %7.1f %8.2f%% | %7.1f %7.1f %8.2f%%%n",
-                    placas[i], il, ia, mejora(il, ia), bl, ba, mejora(bl, ba));
-            sIL += il; sIA += ia; sBL += bl; sBA += ba;
+        // ns por operacion = mediana del lote / n
+        double[] ins = new double[E], bor = new double[E];
+        for (int e = 0; e < E; e++) {
+            ins[e] = mediana(tInsertar[e]) / n;
+            bor[e] = mediana(tBorrar[e]) / n;
         }
-        System.out.println("---------------------------------------------------------------------------------------");
-        System.out.printf("%-12s | %7.1f %7.1f %8.2f%% | %7.1f %7.1f %8.2f%%%n", "PROMEDIO",
-                sIL / n, sIA / n, mejora(sIL / n, sIA / n),
-                sBL / n, sBA / n, mejora(sBL / n, sBA / n));
-        System.out.println("=======================================================================================");
+
+        String[] nombres = {
+            "Hash + Listas      (division)",
+            "Hash + Listas      (multiplicacion)",
+            "Hash + Arboles     (division)",
+            "Hash + Arboles     (multiplicacion)",
+            "Arbol binario unico (sin hash)"
+        };
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n==================== COMPARACION DE RENDIMIENTO (insertar / borrar) ====================\n");
+        sb.append(String.format("m = %d | registros = %d | factor de carga = %.2f | rondas = %d (mediana, orden aleatorio)%n",
+                M, n, (double) n / M, RONDAS));
+        sb.append("-----------------------------------------------------------------------------------------\n");
+        sb.append(String.format("%-38s | %14s | %14s%n", "Estructura", "INSERTAR (ns)", "BORRAR (ns)"));
+        sb.append("-----------------------------------------------------------------------------------------\n");
+        for (int e = 0; e < E; e++) {
+            sb.append(String.format("%-38s | %14.1f | %14.1f%n", nombres[e], ins[e], bor[e]));
+        }
+        sb.append("-----------------------------------------------------------------------------------------\n");
+        sb.append("Mejora (%) = (T_referencia - T_nueva) / T_referencia * 100   (positivo = la nueva es mas rapida)\n\n");
+        sb.append(String.format("%-44s | %10s | %10s%n", "Comparacion", "INSERTAR", "BORRAR"));
+        sb.append(String.format("%-44s | %9.1f%% | %9.1f%%%n", "Hash+Listas(div) vs Arbol unico",
+                mejora(ins[4], ins[0]), mejora(bor[4], bor[0])));
+        sb.append(String.format("%-44s | %9.1f%% | %9.1f%%%n", "Hash+Listas(mult) vs Arbol unico",
+                mejora(ins[4], ins[1]), mejora(bor[4], bor[1])));
+        sb.append(String.format("%-44s | %9.1f%% | %9.1f%%%n", "Hash+Arboles(div) vs Hash+Listas(div)",
+                mejora(ins[0], ins[2]), mejora(bor[0], bor[2])));
+        sb.append(String.format("%-44s | %9.1f%% | %9.1f%%%n", "Hash+Arboles(mult) vs Hash+Listas(mult)",
+                mejora(ins[1], ins[3]), mejora(bor[1], bor[3])));
+        sb.append("=========================================================================================\n");
+
+        String reporte = sb.toString();
+        System.out.print(reporte);
+        return reporte;
     }
 
-    // Lee la primera columna (placa) de cada linea del CSV, sin usar colecciones de Java
+    // Lee la primera columna (placa) de cada linea del CSV
     private static String[] leerPlacas(String ruta) {
         try {
             int total = 0;
@@ -135,53 +201,14 @@ public class ComparadorRendimiento {
         }
     }
 
-    private static double mejora(double lista, double arbol) {
-        return lista == 0 ? 0 : (lista - arbol) / lista * 100.0;
+    private static double mejora(double referencia, double nueva) {
+        return referencia == 0 ? 0 : (referencia - nueva) / referencia * 100.0;
     }
 
     private static double mediana(long[] muestras) {
         long[] c = muestras.clone();
-        java.util.Arrays.sort(c);
+        Arrays.sort(c);
         int mid = c.length / 2;
         return c.length % 2 == 1 ? c[mid] : (c[mid - 1] + c[mid]) / 2.0;
     }
-
-   
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    private static void insertarLista(OperacionesHash h, int k, String placa) {
-        h.getSlotsDivision()[h.hashDivision(k, M)].adicionarFinal(new Nodo<>(placa));
-        h.getSlotsMultiplicacion()[h.hashMultiplicacion(k, M)].adicionarFinal(new Nodo<>(placa));
-    }
-
-    private static void borrarLista(OperacionesHash h, int k, String placa) {
-        h.getSlotsDivision()[h.hashDivision(k, M)].eliminar(placa);
-        h.getSlotsMultiplicacion()[h.hashMultiplicacion(k, M)].eliminar(placa);
-    }
-
-    private static void insertarArbol(OperacionesHash h, BinaryTree[] div, BinaryTree[] mul, int k) {
-        BinaryTree d = div[h.hashDivision(k, M)];
-        d.adicionar(k, d.getRaiz(), 1);
-        BinaryTree u = mul[h.hashMultiplicacion(k, M)];
-        u.adicionar(k, u.getRaiz(), 1);
-    }
-
-    private static void borrarArbol(OperacionesHash h, BinaryTree[] div, BinaryTree[] mul, int k) {
-        BinaryTree d = div[h.hashDivision(k, M)];
-        d.eliminar(k, d.getRaiz());
-        BinaryTree u = mul[h.hashMultiplicacion(k, M)];
-        u.eliminar(k, u.getRaiz());
-    }
-
-    // costo tipico (mediana) de una llamada a System.nanoTime(), para restarlo de cada medicion
-    private static long calibrarNanoTime() {
-        int veces = 100001;
-        long[] d = new long[veces];
-        for (int i = 0; i < veces; i++) {
-            long a = System.nanoTime();
-            d[i] = System.nanoTime() - a;
-        }
-        java.util.Arrays.sort(d);
-        return d[veces / 2];
-    }
 }
-

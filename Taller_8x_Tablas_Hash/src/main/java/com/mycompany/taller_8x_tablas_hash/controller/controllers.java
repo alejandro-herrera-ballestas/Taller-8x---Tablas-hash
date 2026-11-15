@@ -170,7 +170,7 @@ public class controllers implements ActionListener {
                     }
 
                     actualizarVistaTabla();
-                   // com.mycompany.taller_8x_tablas_hash.models.ComparadorRendimiento.comparar(ruta);
+//                   com.mycompany.taller_8x_tablas_hash.models.ComparadorRendimiento.comparar(ruta);
                     JOptionPane.showMessageDialog(vista, "Datos cargados y procesados en la Tabla Hash.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
                 } catch (Exception ex) {

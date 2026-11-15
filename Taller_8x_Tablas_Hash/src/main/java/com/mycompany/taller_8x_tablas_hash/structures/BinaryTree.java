@@ -20,6 +20,13 @@ public class BinaryTree {
             Limpiar();
 	}
         
+        public  boolean estaVacia(){
+            if(nodos == 0)
+                return true;
+            else    
+                return false;
+        }
+        
         public void Limpiar(){
             raiz = null;
             altura = 0;
@@ -68,7 +75,10 @@ public class BinaryTree {
 		} 
 	}
 	
-        public static Object buscar(long k, Node raiz){
+        public Object buscar(long k, Node raiz){
+            if( estaVacia() ) return null;
+                
+                
             if (raiz == null)
                 return null;
 
@@ -88,6 +98,7 @@ public class BinaryTree {
     private boolean eliminado;
 
     public boolean eliminar(long k, Node raiz){
+        if( estaVacia() ) return false;
         eliminado = false;
         this.raiz = eliminarNodo(k, this.raiz);
         return eliminado;
